@@ -1,0 +1,1 @@
+﻿alter table recep_sample_report add date_report timestamp 

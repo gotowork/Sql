@@ -1,0 +1,28 @@
+﻿CREATE SEQUENCE element_idelement_seq;
+CREATE SEQUENCE company_idcompany_seq;
+CREATE SEQUENCE measurement_unit_iduni_seq;
+CREATE SEQUENCE convert_unit_measurement_idconvert_seq;
+CREATE SEQUENCE process_idprocess_seq;
+CREATE SEQUENCE template_method_process_idtemplate_method_process_seq;
+CREATE SEQUENCE correlative_idcorrelative_seq;
+CREATE SEQUENCE referenceMat_idreferenceMat_seq;
+CREATE SEQUENCE tray_idtray_seq;
+CREATE SEQUENCE process_idstage_seq;
+CREATE SEQUENCE mr_idmr_seq;
+CREATE SEQUENCE mr_detail_idmr_detail_seq;
+CREATE SEQUENCE person_idperson_seq;
+CREATE SEQUENCE tablempn_idtablempn_seq;
+CREATE SEQUENCE element_idelement_seq;
+CREATE SEQUENCE corr_modules_idcorr_modules_seq;
+CREATE SEQUENCE mr_jar_idmr_jar_seq;
+CREATE SEQUENCE profile_system_idprofile_seq;
+CREATE SEQUENCE user_system_iduser_seq;
+CREATE SEQUENCE process_user_system_seq;
+CREATE SEQUENCE batch_num_tray_seq;
+CREATE SEQUENCE configuration_idconfiguration_seq;
+CREATE SEQUENCE idrequirement_process_user_seq;
+CREATE SEQUENCE idprocess_requirement_seq;
+CREATE SEQUENCE configuration_folder_seq;
+CREATE SEQUENCE documentation_seq;
+
+

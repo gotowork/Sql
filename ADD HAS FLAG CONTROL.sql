@@ -1,0 +1,1 @@
+﻿ALTER TABLE batch ADD COLUMN has_sample_control boolean;
