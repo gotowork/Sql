@@ -2518,15 +2518,16 @@ create table type_preparation_sample
 
 -- drop table prep_samples
 create table prep_samples
-(
-	idprep_samples serial primary key,
-	idrecep_sample_detail bigint references Recep_Sample_Detail(idrecep_sample_detail),	
-	
+(		
+	idrecep_sample_detail bigint references Recep_Sample_Detail(idrecep_sample_detail) primary key,
+	Flag_humidity_analysis boolean,
+        Flag_reject boolean,
+        Flag_counter_sample smallint,
 	flag_60celsius	boolean,
 
 	-- entrada y salida de la muestra
-	date_input	timestamp,
-	user_input	varchar(20),		
+	Input_sample_date	timestamp,
+	Input_sample_user	varchar(20),
 	
 	weight_gross	decimal,
 	weight_gross_date	timestamp,
@@ -2545,7 +2546,7 @@ create table prep_samples
 	
 	moisture_reject	boolean,
 	moisture_reject_date	timestamp,
-	moisture_reject_user	varchar(20),	
+	moisture_reject_user	varchar(20),
 	
 	-- peso de rechazo para almacenamiento
 	weight_gross_reject	decimal,
@@ -2553,24 +2554,27 @@ create table prep_samples
 	weight_gross_reject_user varchar(20),
 
 	-- marcar salida de muestra a ataque
-	date_output_sample timestamp,
-	user_output_sample timestamp,
-	date_output_cs	timestamp,
-	user_output_cs	varchar(20),
-	date_output_re	timestamp,
-	user_output_re	varchar(20),
-
-	-- almacen	
-	flag_return_reject_sample boolean,
-	flag_return_counter_sample boolean,
-	observation	varchar(50),
+	output_date_sample timestamp,
+	output_user_sample timestamp,
+	output_date_cs	timestamp,
+	output_user_cs	varchar(20),
+	output_date_re	timestamp,
+	output_user_re	varchar(20),
+	
+	observation1	varchar(50),
 
 	-- entrada y salida almacen
 	store_input_date_cs	timestamp,
 	store_input_user_cs	varchar(20),
 
+	store_input_date_re	timestamp,
+	store_input_user_re	varchar(20),
 	
+	store_output_date_cs	timestamp,
+	store_output_user_cs	varchar(20),
 
-	store_output_date	timestamp,
-	store_output_user	varchar(20)
+	store_output_date_re	timestamp,
+	store_output_user_re	varchar(20),
+
+	observation2	varchar(50)
 );
