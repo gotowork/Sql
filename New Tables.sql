@@ -2519,12 +2519,12 @@ create table type_preparation_sample
 -- drop table prep_samples
 create table prep_samples
 (		
-	idrecep_sample_detail bigint references Recep_Sample_Detail(idrecep_sample_detail) primary key,
+	idrecep_sample_detail bigint references Recep_Sample_Detail(idrecep_sample_detail) primary key,	
 	Flag_humidity_analysis boolean,
         Flag_reject boolean,
         Flag_counter_sample smallint,
 	flag_60celsius	boolean,
-
+	Date_creation	timestamp,
 	-- entrada y salida de la muestra
 	Input_sample_date	timestamp,
 	Input_sample_user	varchar(20),
@@ -2576,5 +2576,5 @@ create table prep_samples
 	store_output_date_re	timestamp,
 	store_output_user_re	varchar(20),
 
-	observation2	varchar(50)
+	observation2	varchar(50)	
 );

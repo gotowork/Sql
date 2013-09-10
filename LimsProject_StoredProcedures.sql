@@ -6987,209 +6987,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_recep_sample_detail_Insert(int8,int2,varchar,varchar,varchar,numeric,int8,bool,numeric,numeric,bool,varchar,varchar,int8,int2,bool,varchar);
-CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_Insert
-(
-	p_idrecep_sample_detail int8 ,
-	p_order_sample int2 = null ,
-	p_cod_sample varchar(12) = null ,
-	p_procedence varchar(300) = null ,
-	p_name_sample varchar(300) = null ,
-	p_amount_weight numeric = null ,
-	p_cod_interno int8 = null ,
-	p_flag_reject bool = null ,
-	p_cost_sample numeric = null ,
-	p_analisys_time numeric = null ,
-	p_flag_control_sample bool = null ,
-	p_cod_type_sample varchar(5) = null ,
-	p_cod_des_sample varchar(5) = null ,
-	p_idrecep_sample int8 = null ,
-	p_flag_counter_sample int2 = null ,
-	p_flag_envelope_sealed bool = null ,
-	p_des_container varchar(50) = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.recep_sample_detail
-(
-	order_sample,
-	cod_sample,
-	procedence,
-	name_sample,
-	amount_weight,
-	cod_interno,
-	flag_reject,
-	cost_sample,
-	analisys_time,
-	flag_control_sample,
-	cod_type_sample,
-	cod_des_sample,
-	idrecep_sample,
-	flag_counter_sample,
-	flag_envelope_sealed,
-	des_container
-
-)
-VALUES
-(
-	p_order_sample,
-	p_cod_sample,
-	p_procedence,
-	p_name_sample,
-	p_amount_weight,
-	p_cod_interno,
-	p_flag_reject,
-	p_cost_sample,
-	p_analisys_time,
-	p_flag_control_sample,
-	p_cod_type_sample,
-	p_cod_des_sample,
-	p_idrecep_sample,
-	p_flag_counter_sample,
-	p_flag_envelope_sealed,
-	p_des_container
-
-)returning idrecep_sample_detail into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_recep_sample_detail_Update(int8,int2,varchar,varchar,varchar,numeric,int8,bool,numeric,numeric,bool,varchar,varchar,int8,int2,bool,varchar);
-CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_Update
-(
-	p_idrecep_sample_detail int8,
-	p_order_sample int2 = null,
-	p_cod_sample varchar(12) = null,
-	p_procedence varchar(300) = null,
-	p_name_sample varchar(300) = null,
-	p_amount_weight numeric = null,
-	p_cod_interno int8 = null,
-	p_flag_reject bool = null,
-	p_cost_sample numeric = null,
-	p_analisys_time numeric = null,
-	p_flag_control_sample bool = null,
-	p_cod_type_sample varchar(5) = null,
-	p_cod_des_sample varchar(5) = null,
-	p_idrecep_sample int8 = null,
-	p_flag_counter_sample int2 = null,
-	p_flag_envelope_sealed bool = null,
-	p_des_container varchar(50) = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.recep_sample_detail
-SET
-	order_sample = p_order_sample,
-	cod_sample = p_cod_sample,
-	procedence = p_procedence,
-	name_sample = p_name_sample,
-	amount_weight = p_amount_weight,
-	cod_interno = p_cod_interno,
-	flag_reject = p_flag_reject,
-	cost_sample = p_cost_sample,
-	analisys_time = p_analisys_time,
-	flag_control_sample = p_flag_control_sample,
-	cod_type_sample = p_cod_type_sample,
-	cod_des_sample = p_cod_des_sample,
-	idrecep_sample = p_idrecep_sample,
-	flag_counter_sample = p_flag_counter_sample,
-	flag_envelope_sealed = p_flag_envelope_sealed,
-	des_container = p_des_container
- WHERE 
-	idrecep_sample_detail = p_idrecep_sample_detail;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_recep_sample_detail_SelectByPrimaryKey(int8);
-CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_SelectByPrimaryKey
-(
-	p_idrecep_sample_detail int8
-) returns TABLE ("Idrecep_sample_detail" int8, "Order_sample" int2, "Cod_sample" varchar, "Procedence" varchar, "Name_sample" varchar, "Amount_weight" numeric, "Cod_interno" int8, "Flag_reject" bool, "Cost_sample" numeric, "Analisys_time" numeric, "Flag_control_sample" bool, "Cod_type_sample" varchar, "Cod_des_sample" varchar, "Idrecep_sample" int8, "Flag_counter_sample" int2, "Flag_envelope_sealed" bool, "Des_container" varchar
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.recep_sample_detail
-	WHERE 
-			idrecep_sample_detail = p_idrecep_sample_detail;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_recep_sample_detail_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_SelectAll()
- returns TABLE ("Idrecep_sample_detail" int8, "Order_sample" int2, "Cod_sample" varchar, "Procedence" varchar, "Name_sample" varchar, "Amount_weight" numeric, "Cod_interno" int8, "Flag_reject" bool, "Cost_sample" numeric, "Analisys_time" numeric, "Flag_control_sample" bool, "Cod_type_sample" varchar, "Cod_des_sample" varchar, "Idrecep_sample" int8, "Flag_counter_sample" int2, "Flag_envelope_sealed" bool, "Des_container" varchar
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.recep_sample_detail;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_recep_sample_detail_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idrecep_sample_detail int8, order_sample int2, cod_sample varchar, procedence varchar, name_sample varchar, amount_weight numeric, cod_interno int8, flag_reject bool, cost_sample numeric, analisys_time numeric, flag_control_sample bool, cod_type_sample varchar, cod_des_sample varchar, idrecep_sample int8, flag_counter_sample int2, flag_envelope_sealed bool, des_container varchar
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.recep_sample_detail WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_recep_sample_detail_DeleteByPrimaryKey(int8);
-CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_DeleteByPrimaryKey
-(
-	p_idrecep_sample_detail int8
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.recep_sample_detail
- WHERE 
-	idrecep_sample_detail = p_idrecep_sample_detail; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_recep_sample_detail_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.recep_sample_detail WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
 drop function if exists public.sp_recep_sample_Insert(int8,varchar,timestamp,bpchar,varchar,int2,int2,int2,varchar,varchar,date,varchar,date,bool,timestamp,varchar,numeric,numeric,numeric,numeric,bool,numeric);
 CREATE OR REPLACE FUNCTION public.sp_recep_sample_Insert
 (
@@ -7411,6 +7208,209 @@ BEGIN
 
 
 	EXECUTE 'DELETE FROM public.recep_sample WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_recep_sample_detail_Insert(int8,int2,varchar,varchar,varchar,numeric,int8,bool,numeric,numeric,bool,varchar,varchar,int8,int2,bool,varchar);
+CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_Insert
+(
+	p_idrecep_sample_detail int8 ,
+	p_order_sample int2 = null ,
+	p_cod_sample varchar(12) = null ,
+	p_procedence varchar(300) = null ,
+	p_name_sample varchar(300) = null ,
+	p_amount_weight numeric = null ,
+	p_cod_interno int8 = null ,
+	p_flag_reject bool = null ,
+	p_cost_sample numeric = null ,
+	p_analisys_time numeric = null ,
+	p_flag_control_sample bool = null ,
+	p_cod_type_sample varchar(5) = null ,
+	p_cod_des_sample varchar(5) = null ,
+	p_idrecep_sample int8 = null ,
+	p_flag_counter_sample int2 = null ,
+	p_flag_envelope_sealed bool = null ,
+	p_des_container varchar(50) = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.recep_sample_detail
+(
+	order_sample,
+	cod_sample,
+	procedence,
+	name_sample,
+	amount_weight,
+	cod_interno,
+	flag_reject,
+	cost_sample,
+	analisys_time,
+	flag_control_sample,
+	cod_type_sample,
+	cod_des_sample,
+	idrecep_sample,
+	flag_counter_sample,
+	flag_envelope_sealed,
+	des_container
+
+)
+VALUES
+(
+	p_order_sample,
+	p_cod_sample,
+	p_procedence,
+	p_name_sample,
+	p_amount_weight,
+	p_cod_interno,
+	p_flag_reject,
+	p_cost_sample,
+	p_analisys_time,
+	p_flag_control_sample,
+	p_cod_type_sample,
+	p_cod_des_sample,
+	p_idrecep_sample,
+	p_flag_counter_sample,
+	p_flag_envelope_sealed,
+	p_des_container
+
+)returning idrecep_sample_detail into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_recep_sample_detail_Update(int8,int2,varchar,varchar,varchar,numeric,int8,bool,numeric,numeric,bool,varchar,varchar,int8,int2,bool,varchar);
+CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_Update
+(
+	p_idrecep_sample_detail int8,
+	p_order_sample int2 = null,
+	p_cod_sample varchar(12) = null,
+	p_procedence varchar(300) = null,
+	p_name_sample varchar(300) = null,
+	p_amount_weight numeric = null,
+	p_cod_interno int8 = null,
+	p_flag_reject bool = null,
+	p_cost_sample numeric = null,
+	p_analisys_time numeric = null,
+	p_flag_control_sample bool = null,
+	p_cod_type_sample varchar(5) = null,
+	p_cod_des_sample varchar(5) = null,
+	p_idrecep_sample int8 = null,
+	p_flag_counter_sample int2 = null,
+	p_flag_envelope_sealed bool = null,
+	p_des_container varchar(50) = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.recep_sample_detail
+SET
+	order_sample = p_order_sample,
+	cod_sample = p_cod_sample,
+	procedence = p_procedence,
+	name_sample = p_name_sample,
+	amount_weight = p_amount_weight,
+	cod_interno = p_cod_interno,
+	flag_reject = p_flag_reject,
+	cost_sample = p_cost_sample,
+	analisys_time = p_analisys_time,
+	flag_control_sample = p_flag_control_sample,
+	cod_type_sample = p_cod_type_sample,
+	cod_des_sample = p_cod_des_sample,
+	idrecep_sample = p_idrecep_sample,
+	flag_counter_sample = p_flag_counter_sample,
+	flag_envelope_sealed = p_flag_envelope_sealed,
+	des_container = p_des_container
+ WHERE 
+	idrecep_sample_detail = p_idrecep_sample_detail;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_recep_sample_detail_SelectByPrimaryKey(int8);
+CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_SelectByPrimaryKey
+(
+	p_idrecep_sample_detail int8
+) returns TABLE ("Idrecep_sample_detail" int8, "Order_sample" int2, "Cod_sample" varchar, "Procedence" varchar, "Name_sample" varchar, "Amount_weight" numeric, "Cod_interno" int8, "Flag_reject" bool, "Cost_sample" numeric, "Analisys_time" numeric, "Flag_control_sample" bool, "Cod_type_sample" varchar, "Cod_des_sample" varchar, "Idrecep_sample" int8, "Flag_counter_sample" int2, "Flag_envelope_sealed" bool, "Des_container" varchar
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.recep_sample_detail
+	WHERE 
+			idrecep_sample_detail = p_idrecep_sample_detail;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_recep_sample_detail_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_SelectAll()
+ returns TABLE ("Idrecep_sample_detail" int8, "Order_sample" int2, "Cod_sample" varchar, "Procedence" varchar, "Name_sample" varchar, "Amount_weight" numeric, "Cod_interno" int8, "Flag_reject" bool, "Cost_sample" numeric, "Analisys_time" numeric, "Flag_control_sample" bool, "Cod_type_sample" varchar, "Cod_des_sample" varchar, "Idrecep_sample" int8, "Flag_counter_sample" int2, "Flag_envelope_sealed" bool, "Des_container" varchar
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.recep_sample_detail;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_recep_sample_detail_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idrecep_sample_detail int8, order_sample int2, cod_sample varchar, procedence varchar, name_sample varchar, amount_weight numeric, cod_interno int8, flag_reject bool, cost_sample numeric, analisys_time numeric, flag_control_sample bool, cod_type_sample varchar, cod_des_sample varchar, idrecep_sample int8, flag_counter_sample int2, flag_envelope_sealed bool, des_container varchar
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.recep_sample_detail WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_recep_sample_detail_DeleteByPrimaryKey(int8);
+CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_DeleteByPrimaryKey
+(
+	p_idrecep_sample_detail int8
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.recep_sample_detail
+ WHERE 
+	idrecep_sample_detail = p_idrecep_sample_detail; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_recep_sample_detail_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_recep_sample_detail_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.recep_sample_detail WHERE ' || FieldName  ||' = '|| Value 
 	USING Value;
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
@@ -15472,7 +15472,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_prep_samples_Insert(int8,bool,bool,int2,bool,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,bool,timestamp,varchar,numeric,timestamp,varchar,timestamp,timestamp,timestamp,varchar,timestamp,varchar,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,varchar);
+drop function if exists public.sp_prep_samples_Insert(int8,bool,bool,int2,bool,timestamp,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,bool,timestamp,varchar,numeric,timestamp,varchar,timestamp,timestamp,timestamp,varchar,timestamp,varchar,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,varchar);
 CREATE OR REPLACE FUNCTION public.sp_prep_samples_Insert
 (
 	p_idrecep_sample_detail int8 ,
@@ -15480,6 +15480,7 @@ CREATE OR REPLACE FUNCTION public.sp_prep_samples_Insert
 	p_flag_reject bool = null ,
 	p_flag_counter_sample int2 = null ,
 	p_flag_60celsius bool = null ,
+	p_date_creation timestamp = null ,
 	p_input_sample_date timestamp = null ,
 	p_input_sample_user varchar(20) = null ,
 	p_weight_gross numeric = null ,
@@ -15526,6 +15527,7 @@ INSERT INTO public.prep_samples
 	flag_reject,
 	flag_counter_sample,
 	flag_60celsius,
+	date_creation,
 	input_sample_date,
 	input_sample_user,
 	weight_gross,
@@ -15569,6 +15571,7 @@ VALUES
 	p_flag_reject,
 	p_flag_counter_sample,
 	p_flag_60celsius,
+	p_date_creation,
 	p_input_sample_date,
 	p_input_sample_user,
 	p_weight_gross,
@@ -15611,7 +15614,7 @@ get diagnostics result = ROW_COUNT;return result;
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_prep_samples_Update(int8,bool,bool,int2,bool,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,bool,timestamp,varchar,numeric,timestamp,varchar,timestamp,timestamp,timestamp,varchar,timestamp,varchar,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,varchar);
+drop function if exists public.sp_prep_samples_Update(int8,bool,bool,int2,bool,timestamp,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,timestamp,varchar,numeric,bool,timestamp,varchar,numeric,timestamp,varchar,timestamp,timestamp,timestamp,varchar,timestamp,varchar,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,timestamp,varchar,varchar);
 CREATE OR REPLACE FUNCTION public.sp_prep_samples_Update
 (
 	p_idrecep_sample_detail int8,
@@ -15619,6 +15622,7 @@ CREATE OR REPLACE FUNCTION public.sp_prep_samples_Update
 	p_flag_reject bool = null,
 	p_flag_counter_sample int2 = null,
 	p_flag_60celsius bool = null,
+	p_date_creation timestamp = null,
 	p_input_sample_date timestamp = null,
 	p_input_sample_user varchar(20) = null,
 	p_weight_gross numeric = null,
@@ -15665,6 +15669,7 @@ SET
 	flag_reject = p_flag_reject,
 	flag_counter_sample = p_flag_counter_sample,
 	flag_60celsius = p_flag_60celsius,
+	date_creation = p_date_creation,
 	input_sample_date = p_input_sample_date,
 	input_sample_user = p_input_sample_user,
 	weight_gross = p_weight_gross,
@@ -15710,7 +15715,7 @@ drop function if exists public.sp_prep_samples_SelectByPrimaryKey(int8);
 CREATE OR REPLACE FUNCTION public.sp_prep_samples_SelectByPrimaryKey
 (
 	p_idrecep_sample_detail int8
-) returns TABLE ("Idrecep_sample_detail" int8, "Flag_humidity_analysis" bool, "Flag_reject" bool, "Flag_counter_sample" int2, "Flag_60celsius" bool, "Input_sample_date" timestamp, "Input_sample_user" varchar, "Weight_gross" numeric, "Weight_gross_date" timestamp, "Weight_gross_user" varchar, "Weight_moisture" numeric, "Weight_moisture_date" timestamp, "Weight_moisture_user" varchar, "Weight_dry" numeric, "Weight_dry_date" timestamp, "Weight_dry_user" varchar, "Percent_moisture" numeric, "Moisture_reject" bool, "Moisture_reject_date" timestamp, "Moisture_reject_user" varchar, "Weight_gross_reject" numeric, "Weight_gross_reject_date" timestamp, "Weight_gross_reject_user" varchar, "Output_date_sample" timestamp, "Output_user_sample" timestamp, "Output_date_cs" timestamp, "Output_user_cs" varchar, "Output_date_re" timestamp, "Output_user_re" varchar, "Observation1" varchar, "Store_input_date_cs" timestamp, "Store_input_user_cs" varchar, "Store_input_date_re" timestamp, "Store_input_user_re" varchar, "Store_output_date_cs" timestamp, "Store_output_user_cs" varchar, "Store_output_date_re" timestamp, "Store_output_user_re" varchar, "Observation2" varchar
+) returns TABLE ("Idrecep_sample_detail" int8, "Flag_humidity_analysis" bool, "Flag_reject" bool, "Flag_counter_sample" int2, "Flag_60celsius" bool, "Date_creation" timestamp, "Input_sample_date" timestamp, "Input_sample_user" varchar, "Weight_gross" numeric, "Weight_gross_date" timestamp, "Weight_gross_user" varchar, "Weight_moisture" numeric, "Weight_moisture_date" timestamp, "Weight_moisture_user" varchar, "Weight_dry" numeric, "Weight_dry_date" timestamp, "Weight_dry_user" varchar, "Percent_moisture" numeric, "Moisture_reject" bool, "Moisture_reject_date" timestamp, "Moisture_reject_user" varchar, "Weight_gross_reject" numeric, "Weight_gross_reject_date" timestamp, "Weight_gross_reject_user" varchar, "Output_date_sample" timestamp, "Output_user_sample" timestamp, "Output_date_cs" timestamp, "Output_user_cs" varchar, "Output_date_re" timestamp, "Output_user_re" varchar, "Observation1" varchar, "Store_input_date_cs" timestamp, "Store_input_user_cs" varchar, "Store_input_date_re" timestamp, "Store_input_user_re" varchar, "Store_output_date_cs" timestamp, "Store_output_user_cs" varchar, "Store_output_date_re" timestamp, "Store_output_user_re" varchar, "Observation2" varchar
 )AS $$
 BEGIN
 
@@ -15725,7 +15730,7 @@ $$ LANGUAGE plpgsql;
 
 drop function if exists public.sp_prep_samples_SelectAll();
 CREATE OR REPLACE FUNCTION public.sp_prep_samples_SelectAll()
- returns TABLE ("Idrecep_sample_detail" int8, "Flag_humidity_analysis" bool, "Flag_reject" bool, "Flag_counter_sample" int2, "Flag_60celsius" bool, "Input_sample_date" timestamp, "Input_sample_user" varchar, "Weight_gross" numeric, "Weight_gross_date" timestamp, "Weight_gross_user" varchar, "Weight_moisture" numeric, "Weight_moisture_date" timestamp, "Weight_moisture_user" varchar, "Weight_dry" numeric, "Weight_dry_date" timestamp, "Weight_dry_user" varchar, "Percent_moisture" numeric, "Moisture_reject" bool, "Moisture_reject_date" timestamp, "Moisture_reject_user" varchar, "Weight_gross_reject" numeric, "Weight_gross_reject_date" timestamp, "Weight_gross_reject_user" varchar, "Output_date_sample" timestamp, "Output_user_sample" timestamp, "Output_date_cs" timestamp, "Output_user_cs" varchar, "Output_date_re" timestamp, "Output_user_re" varchar, "Observation1" varchar, "Store_input_date_cs" timestamp, "Store_input_user_cs" varchar, "Store_input_date_re" timestamp, "Store_input_user_re" varchar, "Store_output_date_cs" timestamp, "Store_output_user_cs" varchar, "Store_output_date_re" timestamp, "Store_output_user_re" varchar, "Observation2" varchar
+ returns TABLE ("Idrecep_sample_detail" int8, "Flag_humidity_analysis" bool, "Flag_reject" bool, "Flag_counter_sample" int2, "Flag_60celsius" bool, "Date_creation" timestamp, "Input_sample_date" timestamp, "Input_sample_user" varchar, "Weight_gross" numeric, "Weight_gross_date" timestamp, "Weight_gross_user" varchar, "Weight_moisture" numeric, "Weight_moisture_date" timestamp, "Weight_moisture_user" varchar, "Weight_dry" numeric, "Weight_dry_date" timestamp, "Weight_dry_user" varchar, "Percent_moisture" numeric, "Moisture_reject" bool, "Moisture_reject_date" timestamp, "Moisture_reject_user" varchar, "Weight_gross_reject" numeric, "Weight_gross_reject_date" timestamp, "Weight_gross_reject_user" varchar, "Output_date_sample" timestamp, "Output_user_sample" timestamp, "Output_date_cs" timestamp, "Output_user_cs" varchar, "Output_date_re" timestamp, "Output_user_re" varchar, "Observation1" varchar, "Store_input_date_cs" timestamp, "Store_input_user_cs" varchar, "Store_input_date_re" timestamp, "Store_input_user_re" varchar, "Store_output_date_cs" timestamp, "Store_output_user_cs" varchar, "Store_output_date_re" timestamp, "Store_output_user_re" varchar, "Observation2" varchar
 )AS $$
 BEGIN
 
@@ -15742,7 +15747,7 @@ CREATE OR REPLACE FUNCTION public.sp_prep_samples_SelectByField
 	FieldName varchar(100),
 	Value varchar(1000)
 )
- returns TABLE (idrecep_sample_detail int8, flag_humidity_analysis bool, flag_reject bool, flag_counter_sample int2, flag_60celsius bool, input_sample_date timestamp, input_sample_user varchar, weight_gross numeric, weight_gross_date timestamp, weight_gross_user varchar, weight_moisture numeric, weight_moisture_date timestamp, weight_moisture_user varchar, weight_dry numeric, weight_dry_date timestamp, weight_dry_user varchar, percent_moisture numeric, moisture_reject bool, moisture_reject_date timestamp, moisture_reject_user varchar, weight_gross_reject numeric, weight_gross_reject_date timestamp, weight_gross_reject_user varchar, output_date_sample timestamp, output_user_sample timestamp, output_date_cs timestamp, output_user_cs varchar, output_date_re timestamp, output_user_re varchar, observation1 varchar, store_input_date_cs timestamp, store_input_user_cs varchar, store_input_date_re timestamp, store_input_user_re varchar, store_output_date_cs timestamp, store_output_user_cs varchar, store_output_date_re timestamp, store_output_user_re varchar, observation2 varchar
+ returns TABLE (idrecep_sample_detail int8, flag_humidity_analysis bool, flag_reject bool, flag_counter_sample int2, flag_60celsius bool, date_creation timestamp, input_sample_date timestamp, input_sample_user varchar, weight_gross numeric, weight_gross_date timestamp, weight_gross_user varchar, weight_moisture numeric, weight_moisture_date timestamp, weight_moisture_user varchar, weight_dry numeric, weight_dry_date timestamp, weight_dry_user varchar, percent_moisture numeric, moisture_reject bool, moisture_reject_date timestamp, moisture_reject_user varchar, weight_gross_reject numeric, weight_gross_reject_date timestamp, weight_gross_reject_user varchar, output_date_sample timestamp, output_user_sample timestamp, output_date_cs timestamp, output_user_cs varchar, output_date_re timestamp, output_user_re varchar, observation1 varchar, store_input_date_cs timestamp, store_input_user_cs varchar, store_input_date_re timestamp, store_input_user_re varchar, store_output_date_cs timestamp, store_output_user_cs varchar, store_output_date_re timestamp, store_output_user_re varchar, observation2 varchar
 )AS $$
 BEGIN
 
