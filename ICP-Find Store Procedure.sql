@@ -109,7 +109,7 @@ BEGIN
 					 END as plasmaView	
 	from dbo.TblMethodLines A
 		inner join dbo.TblReportableMethod B on A.ReportableMethodID = B.ReportableMethodID	
-	order by ElementSymbol
+	order by ElementSymbol, wavelength
 
 END
 GO

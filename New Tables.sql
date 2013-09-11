@@ -2449,13 +2449,16 @@ create table Template_method_icp_detail
 create table element_wavelength
 (
 	idelement_wavelength 	serial primary key,
-	elementsymbol		varchar(4),
-	wavelength		varchar(8),
+	idelement	smallint references element(idelement),
+	wavelength	varchar(8),
 	lineorder	smallint,
 	plasmaview	smallint,
-	idl		decimal,
-	linealidad	decimal,
-	mdl		decimal,
+	idl_axial	decimal,
+	idl_radial	decimal,
+	lineality_axial	decimal,
+	lineality_radial decimal,
+	mdl_axial	decimal,
+	mdl_radial	decimal,
 	ipc		decimal,
 	lfb		decimal,
 	qc		decimal,
@@ -2503,19 +2506,6 @@ create table destiny_sample_recep
 	status		boolean	
 );
 
--- drop table type_preparation_sample
-create table type_preparation_sample
-(
-	idtype_preparation_sample serial primary key,
-	name_preparation	varchar(30),
-	description	varchar(500),
-	usernew		varchar(20),
-	datenew		timestamp,
-	useredit	varchar(20),
-	dateedit	timestamp,
-	status		boolean
-);
-
 -- drop table prep_samples
 create table prep_samples
 (		
@@ -2553,9 +2543,12 @@ create table prep_samples
 	weight_gross_reject_date timestamp,
 	weight_gross_reject_user varchar(20),
 
-	-- marcar salida de muestra a ataque
+	-- marcar salida de muestra a ataque u otra
+	output_flag_sample	boolean,
+	output_flag_cs	boolean,
+	output_flag_re	boolean,
 	output_date_sample timestamp,
-	output_user_sample timestamp,
+	output_user_sample varchar(20),
 	output_date_cs	timestamp,
 	output_user_cs	varchar(20),
 	output_date_re	timestamp,
@@ -2576,5 +2569,10 @@ create table prep_samples
 	store_output_date_re	timestamp,
 	store_output_user_re	varchar(20),
 
-	observation2	varchar(50)	
+	observation2	varchar(50),
+
+	final_weight_gross 	boolean,
+	final_moisture	boolean,
+	final_reject	boolean,
+	final_sample_prepared boolean
 );
