@@ -102,14 +102,23 @@ as
 BEGIN
 
 	select distinct 
-		A.elementSymbol, A.wavelength, 
-		A.lineOrder, CASE A.instrumentView	
+		A.elementSymbol, A.wavelength
+		, ElementName = left(A.elementSymbol+'_', 2)+A.wavelength
+		, A.lineOrder, CASE A.instrumentView	
 						WHEN 1 THEN 'Axial'
 						ELSE 'Radial'
 					 END as plasmaView	
+	into #t1
 	from dbo.TblMethodLines A
-		inner join dbo.TblReportableMethod B on A.ReportableMethodID = B.ReportableMethodID	
-	order by ElementSymbol, wavelength
+		inner join dbo.TblReportableMethod B on A.ReportableMethodID = B.ReportableMethodID		
+	order by A.ElementSymbol, A.wavelength
+
+	select elementSymbol, wavelength, ElementName
+		, "Radial" = sum(case plasmaView when 'Radial' then 1 else 0 end)
+		, "Axial" = sum(case plasmaView when 'Axial' then 1 else 0 end)
+	from #t1
+	group by elementSymbol, wavelength, ElementName
+	
 
 END
 GO

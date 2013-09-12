@@ -447,30 +447,32 @@ CREATE TABLE template_method_vc
 CREATE TABLE template_method_gr
 (
 	idtemplate_method int4 references template_method(idtemplate_method) primary key,
-	
-	-- weight and readings		
+	-- weight and readings
 	weight		decimal(10,5),
-	weight_incertitude	decimal(10,5),
+	weight_incertitude	decimal(10,5),	
+	reading_min	decimal(10,5),
+	reading_max	decimal(10,5),	
 	reason_rep	decimal(10,5),
 	error_allowed	decimal(10,5),
-	date_allowed_error date,
 	
 	-- Results
-	symbol		varchar(10),
+	symbol		varchar(10),	
 	law_limit_bottom	decimal(10,5),
 	law_limit_top	decimal(10,5),
-	factor_correction	decimal(6,4),
-	flag_factor_correction	boolean,
-
-	-- calibration
-	idunit_input	int2 references measurement_unit(idunit),
+	
 	num_decimal	int2,
 		
 	-- material reference
 	idmr_detail 	smallint references mr_detail(idmr_detail),
 	mr_incertitude	decimal(10,5),
 	blk_max		decimal(10,5),
-	reproducibility	decimal(10,5),
+	reproducibility	decimal(10,5),	
+	date_allowed_error date,
+	
+	idunit_result	int2 references measurement_unit(idunit),
+	Num_samples	smallint,
+	Num_days	smallint,
+	Limit_samples	smallint,
 	UserNew		varchar(20),
 	DateNew		date,
 	UserEdit	varchar(20),
@@ -2419,51 +2421,52 @@ CREATE TABLE template_method_icp
 	status		boolean
 );
 
--- drop table template_method_icp_detail
-create table Template_method_icp_detail
+-- drop table element_wavelength
+create table element_wavelength
 (
-	idtemplate_method_icp_detail serial primary key,
-	idtemplate_method int references template_method_icp(idtemplate_method),
+	idelement_wavelength 	serial primary key,
 	idelement	smallint references element(idelement),
-        wavelenght	int, 	
-        element_wavelenght varchar(6),
-        idl 		decimal, -- = a limite inferior MT
-        mdl    		decimal, -- = a limite inferior MD; ; ; ordenar en forma, elemento, intervalo(mdl)
-        ldr		decimal,
-        ldr_aux       	decimal,
-        num_decimal  	decimal,
-        std1 		decimal,
-        std2         	decimal,
-        ipc         	decimal,
-        lfb         	decimal,
-        lfm         	decimal,
-        limit_top   	decimal, --// volumen/alicuota*dilucion2*linealidad        
-        usernew		varchar(20), 
+	element_wavelength	varchar(8),
+	lineorder	smallint,
+	plasmaview	smallint,
+	idl_axial	decimal,
+	idl_radial	decimal,
+	lineality_axial	decimal,
+	lineality_radial decimal,	
+	usernew		varchar(20), 
 	datenew		timestamp,
 	useredit	varchar(20),
 	dateedit	timestamp,
 	status		boolean
 );
 
--- drop table element_wavelength
-create table element_wavelength
+-- drop table template_method_icp_detail
+create table Template_method_icp_detail
 (
-	idelement_wavelength 	serial primary key,
-	idelement	smallint references element(idelement),
-	wavelength	varchar(8),
-	lineorder	smallint,
-	plasmaview	smallint,
-	idl_axial	decimal,
-	idl_radial	decimal,
-	lineality_axial	decimal,
-	lineality_radial decimal,
-	mdl_axial	decimal,
-	mdl_radial	decimal,
-	ipc		decimal,
-	lfb		decimal,
+	idtemplate_method_icp_detail serial primary key,
+	idtemplate_method int references template_method_icp(idtemplate_method),
+	idelement_wavelength int references element_wavelength(idelement_wavelength),
+	idelement	smallint references element(idelement),        
+        idl 		decimal, -- = a limite inferior MT
+        
+        mdl_axial	decimal, -- = a limite inferior MD; ; ; ordenar en forma, elemento, intervalo(mdl)
+	mdl_radial	decimal, -- = a limite inferior MD; ; ; ordenar en forma, elemento, intervalo(mdl)
+
+	ldr		decimal,
+        ldr_aux       	decimal,
+        num_decimal  	decimal,
+        std1 		decimal,
+        std2         	decimal,
+        ipc         	decimal,
+        lfb         	decimal,
+		
 	qc		decimal,
-	priority	decimal,
-	usernew		varchar(20), 
+	priority	decimal,		                 
+
+	lfm         	decimal,
+        limit_top   	decimal, -- volumen/alicuota*dilucion2*linealidad
+	   
+        usernew		varchar(20), 
 	datenew		timestamp,
 	useredit	varchar(20),
 	dateedit	timestamp,
@@ -2571,8 +2574,8 @@ create table prep_samples
 
 	observation2	varchar(50),
 
-	final_weight_gross 	boolean,
-	final_moisture	boolean,
-	final_reject	boolean,
-	final_sample_prepared boolean
+	final_weight_gross 	int, -- 0:sin dato terminal, 1:con dato terminal, 2:completado
+	final_moisture	int,
+	final_reject	int,
+	final_sample_prepared int
 );
