@@ -91,19 +91,20 @@ GO
 --------------------------------------------------------------------------------------------------
 -- TEST:
 /* 
-spFindIcpElements 
+spFindIcpElements @element = 'Pb'
 */
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE SPECIFIC_NAME = N'spFindIcpElements')
    DROP PROCEDURE spFindIcpElements
 GO
 
 CREATE PROCEDURE spFindIcpElements
+@element varchar(10) = null
 as
 BEGIN
 
 	select distinct 
 		A.elementSymbol, A.wavelength
-		, ElementName = left(A.elementSymbol+'_', 2)+A.wavelength
+		, ElementName = left(A.elementSymbol+'_', 2)+ substring(replace(cast(A.wavelength as varchar), '.', ''), 0, 5)
 		, A.lineOrder, CASE A.instrumentView	
 						WHEN 1 THEN 'Axial'
 						ELSE 'Radial'
@@ -117,8 +118,7 @@ BEGIN
 		, "Radial" = sum(case plasmaView when 'Radial' then 1 else 0 end)
 		, "Axial" = sum(case plasmaView when 'Axial' then 1 else 0 end)
 	from #t1
-	group by elementSymbol, wavelength, ElementName
-	
-
+	where (@element is null or elementSymbol = @element)
+	group by elementSymbol, wavelength, ElementName	
 END
 GO

@@ -443,6 +443,32 @@ CREATE TABLE template_method_vc
 	Status		boolean
 );
 
+-- drop table compound
+CREATE TABLE compound
+(
+	idcompound	serial primary key,
+	name_compound	varchar(20),
+	usernew character varying(20),
+	datenew date,
+	useredit character varying(20),
+	dateedit date,
+	status boolean
+);
+
+-- drop table factor_estequiometrico
+CREATE TABLE factor_estequiometrico
+(
+	idfactor_estequiometrico serial primary key,
+	idcompound	int references compound(idcompound),
+	idelement 	int4 references Element(idelement),
+	factor		decimal,
+	usernew character varying(20),
+	datenew date,
+	useredit character varying(20),
+	dateedit date,
+	status boolean
+);
+
 -- drop table template_method_gr
 CREATE TABLE template_method_gr
 (
@@ -463,10 +489,22 @@ CREATE TABLE template_method_gr
 	num_decimal	int2,
 		
 	-- material reference
+	flag_mr		boolean,	
 	idmr_detail 	smallint references mr_detail(idmr_detail),
 	mr_incertitude	decimal(10,5),
 	blk_max		decimal(10,5),
 	reproducibility	decimal(10,5),	
+
+	flagsamfortify	boolean,
+	samfortisol	decimal(10,5),
+	samfortialiquot decimal(10,5),
+	samfortireproducibility decimal(10,5),
+
+	flagblkfortify  boolean,
+	blkfortisol	decimal(10,5),
+	blkfortialiquot	decimal(10,5),
+	blkfortireproducibility decimal(10,5),
+	
 	date_allowed_error date,
 	
 	idunit_result	int2 references measurement_unit(idunit),
@@ -2426,13 +2464,12 @@ create table element_wavelength
 (
 	idelement_wavelength 	serial primary key,
 	idelement	smallint references element(idelement),
-	element_wavelength	varchar(8),
-	lineorder	smallint,
-	plasmaview	smallint,
+	wavelength	varchar(8),
+	element_wavelength	varchar(25),
 	idl_axial	decimal,
 	idl_radial	decimal,
 	lineality_axial	decimal,
-	lineality_radial decimal,	
+	lineality_radial decimal,
 	usernew		varchar(20), 
 	datenew		timestamp,
 	useredit	varchar(20),
@@ -2579,3 +2616,4 @@ create table prep_samples
 	final_reject	int,
 	final_sample_prepared int
 );
+
