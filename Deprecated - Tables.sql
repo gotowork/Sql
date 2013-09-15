@@ -1,4 +1,11 @@
-﻿
+﻿-- drop table Configuration
+CREATE TABLE Configuration
+(
+	idconfiguration	smallint default nextval('configuration_idconfiguration_seq') primary key,
+	nom_configuration	varchar(30),
+	value_configuration	varchar(300)
+);
+
 CREATE TABLE Group_access
 (
 	idgroup_access	serial primary key,
@@ -10,7 +17,8 @@ CREATE TABLE Access (
        cod_access           int NOT NULL,
        access_name          varchar(60) NOT NULL,
        description          varchar(200) NULL,
-       command              varchar(1000) NULL,group                varchar(50) NULL,
+       command              varchar(1000) NULL,
+       group                varchar(50) NULL,
        idgroup_access 	    int REFERENCES group_access
 );
 
@@ -36,8 +44,11 @@ CREATE TABLE Process
 	nom_process	varchar(30),
 	description	varchar(100),
 	cod_module	varchar(4) references module(cod_module),
-	cod_area	varchar(4) references area(cod_area)
+	cod_area	varchar(4) references area(cod_area)	
 );
+
+
+
 
 -- drop table person
 CREATE TABLE person
@@ -59,8 +70,7 @@ CREATE TABLE person
 	DateNew		date,
 	UserEdit	varchar(20),
 	DateEdit	date,
-	Status		boolean,
-	type_person	int   -- 2:cliente, 1:personal de la empresa
+	Status		boolean
 );
 
 -- drop table analist
@@ -100,14 +110,6 @@ CREATE TABLE company
 	Status		boolean
 );
 
--- drop table company_person
-CREATE TABLE company_person
-(
-	idcompany_person serial primary key,
-	idcompany	smallint references company(idcompany),
-	idperson	smallint references person(idperson)	
-);
-
 -- drop table Tablempn
 CREATE TABLE Tablempn
 (
@@ -138,22 +140,21 @@ CREATE TABLE Element
 CREATE TABLE measurement_unit
 (
 	idunit int2 default nextval('measurement_unit_iduni_seq') primary key,
-	name_unit 	varchar(6),
-	description 	varchar(20),	
+	name_unit varchar(6),
+	description varchar(20),	
 	UserNew		varchar(20),
 	DateNew		date,
 	UserEdit	varchar(20),
 	DateEdit	date,
-	Status		boolean,
-	concentration_unit integer -- 1:masa, 2:volumen
+	Status		boolean
 );
 
 -- drop table convert_unit_measurement
 CREATE TABLE convert_unit_measurement
 (
 	idconvert int2 default nextval('convert_unit_measurement_idconvert_seq') primary key,
-	den_unit1 	varchar(6),
-	den_unit2 	varchar(6),
+	den_unit1 varchar(6),
+	den_unit2 varchar(6),
 	idunit1 	int2 references measurement_unit(idunit),
 	idunit2		int2 references measurement_unit(idunit),
 	factor 		decimal(10,5),
@@ -198,15 +199,14 @@ CREATE TABLE Mr
 	type_material	char(1),	-- M:mineral, B:carbon, C:concentrado	
 	status_mr	boolean,	-- vigencia, caducado
 	manufaturer	int2 references company(idcompany),
-	certifier	int2 references company(idcompany),	
+	certifier	int2 references company(idcompany),
 	fbegin_validity	date,
 	fend_validity	date,
 	UserNew		varchar(20),
 	DateNew		date,
 	UserEdit	varchar(20),
 	DateEdit	date,
-	Status		boolean,
-	solid		boolean
+	Status		boolean	
 );
 
 -- drop table Mr_jar
@@ -250,7 +250,6 @@ CREATE TABLE Mr_Detail
 	Status		boolean
 );
 
-
 -- drop table type_sample
 CREATE TABLE type_sample
 (	
@@ -279,7 +278,7 @@ CREATE TABLE correlative
 	UserEdit	varchar(50),
 	DateEdit	date,
 	Status		boolean,
-	primary key(cod_type_sample)
+	primary key(cod_type_sample, cod_serie)
 );
 
 -- drop table description_sample
@@ -291,73 +290,27 @@ CREATE TABLE description_sample
 	DateNew		date,
 	UserEdit	varchar(20),
 	DateEdit	date,
-	Status		boolean,
-	priority_order 	smallint
+	Status		boolean
 );
 
--- drop table compound
-CREATE TABLE compound
+-- drop table template_method
+CREATE TABLE template_method
 (
-	idcompound	serial primary key,
-	name_compound	varchar(20),
-	usernew character varying(20),
-	datenew date,
-	useredit character varying(20),
-	dateedit date,
-	status boolean
-);
-
--- drop table factor_estequiometrico
-CREATE TABLE factor_estequiometrico
-(
-	idfactor_estequiometrico serial primary key,
-	idcompound	int references compound(idcompound),
+	idtemplate_method serial primary key,
+	num_version 	int2,
+	cod_template_method varchar(20),
+	cod_repetition  int2,        -- 1:simple, 2:duplicado, 3:triplicado, 4:cuadruplicado, 8:octuplicado
+	title 		varchar(200),
+	abbreviation	varchar(15),		
+	name_method 	varchar(50),	
+	type_analisys	char(1),     -- A:AA, V:Volumentria, G:Gravimetría, I:Icp, F:Fotometría	
+	recognized	boolean,
 	idelement 	int4 references Element(idelement),
-	factor		decimal,
-	usernew character varying(20),
-	datenew date,
-	useredit character varying(20),
-	dateedit date,
-	status boolean
-);
-
--- drop table template_method_newmont_aa
-CREATE TABLE template_method_newmont_aa
-(
-	idtemplate_method int4 references template_method(idtemplate_method) primary key,
-
-	-- weight and readings	
-	num_mesh	smallint,
-	weight_mesh_entire	decimal(6,2),
-	weight_mesh1	decimal(6,2),
-	volumen		decimal(10,5),
-	dilution2	decimal(10,5),
-	reading_min	decimal(10,5),
-	reading_max	decimal(10,5),
-
-	-- Results
-	symbol		varchar(10),
-	law_limit_bottom	decimal(10,5),
-	law_limit_top	decimal(10,5),
-	factor_correction	decimal(6,4),
-	flag_factor_correction	boolean,
-
-	flag_repetibility1	boolean,
-	rep1_a			decimal(6,4),	
-	rep1_b			decimal(6,4),
-	flag_repetibility2	boolean,
-	rep2_percent		decimal(6,4),
-
-	error_allowed	decimal(10,5),
-	date_allowed_error 	date,
-	flag_flux_taxed_gold	boolean,
-	flux_gold	decimal(10,5),
-
-	-- material reference
-	idmr_detail 	smallint references mr_detail(idmr_detail),
-	mr_incertitude	decimal(10,5),
-	blk_max		decimal(10,5),
-	reproducibility	decimal(10,5),
+	cod_type_sample	varchar(5) references type_sample(cod_type_sample),
+	cod_digestion_method varchar(5) references digestion_method(cod_digestion_method),	
+	cost_method	decimal(10,5),
+	idunit_result	int2 references measurement_unit(idunit),
+	-- field trace
 	UserNew		varchar(20),
 	DateNew		date,
 	UserEdit	varchar(20),
@@ -365,36 +318,35 @@ CREATE TABLE template_method_newmont_aa
 	Status		boolean
 );
 
--- drop table template_method_newmont_gr
-CREATE TABLE template_method_newmont_gr
+-- drop table template_method_aa
+CREATE TABLE template_method_aa
 (
 	idtemplate_method int4 references template_method(idtemplate_method) primary key,
-
 	-- weight and readings
-	num_mesh	smallint,
-	weight_mesh_entire	decimal(6,2),
-	weight_mesh1	decimal(6,2),
+	weight		decimal(10,5),
+	weight_incertitude	decimal(10,5),
+	volumen		decimal(10,5),
 	reading_min	decimal(10,5),
 	reading_max	decimal(10,5),
-
-	-- Results
-	symbol		varchar(10),
-	law_limit_bottom	decimal(10,5),
-	law_limit_top	decimal(10,5),
-	factor_correction	decimal(6,4),
-	flag_factor_correction	boolean,
-
-	flag_repetibility1	boolean,
-	rep1_a			decimal(6,4),	
-	rep1_b			decimal(6,4),
-	flag_repetibility2	boolean,
-	rep2_percent		decimal(6,4),
-
+	dilution2	decimal(10,5),
+	dilution3	decimal(10,5),
+	reason_rep	decimal(10,5),
 	error_allowed	decimal(10,5),
-	date_allowed_error date,
-	flag_flux_taxed_gold	boolean,
-	flux_gold	decimal(10,5),
+	
+	-- Results
+	symbol		varchar(10),	
+	law_limit_bottom	decimal(10,5),
+	law_limit_top		decimal(10,5),
 
+	-- calibration
+	idunit_calib	int2 references measurement_unit(idunit),
+	absorvance	decimal(10,5),
+	abs_incertitude	decimal(10,5),
+	std_verif	decimal(10,5),
+	std_verif_incertitude	decimal(10,5),
+	wave_long	decimal(12,5),
+	num_decimal	int2,
+		
 	-- material reference
 	idmr_detail 	smallint references mr_detail(idmr_detail),
 	mr_incertitude	decimal(10,5),
@@ -404,7 +356,8 @@ CREATE TABLE template_method_newmont_gr
 	DateNew		date,
 	UserEdit	varchar(20),
 	DateEdit	date,
-	Status		boolean
+	Status		boolean,
+	date_allowed_error date
 );
 
 -- drop table calib
@@ -414,9 +367,7 @@ CREATE TABLE calib
 	order_calib	int2,
 	name_calib 	varchar(15),
 	concentration	decimal(10,5),
-	idtemplate_method int4 references template_method(idtemplate_method),
-	aliquot		decimal(10,5),
-	volumen		decimal(10,5)
+	idtemplate_method int4 references template_method(idtemplate_method)
 );
 
 -- drop table tray
@@ -438,6 +389,51 @@ CREATE TABLE Tray
 	Status		boolean		
 );
 
+-- drop table template_method_detail
+CREATE TABLE template_method_detail
+(
+	idtemplate_method_detail serial primary key,	
+	name_variable 	varchar(30),
+	alias_variable 	varchar(30),
+	value_variable 	decimal(10,5),
+	type_variable	char(1), -- (C=constante ó V=variable)
+	group_variable 	char(1), -- (H=head or D=detail)
+	visible 	boolean,
+	idtemplate_method int4 references template_method(idtemplate_method),
+	status 		boolean,
+	
+);
+
+-- drop table tree_expression
+CREATE TABLE tree_expression
+(
+	idtree_expression bigserial primary key,
+	name_variable 	varchar(20),	
+	id		int,
+	parentid	int,
+	expression	varchar(500),
+	status 		boolean,
+	idtemplate_method int4 references template_method(idtemplate_method),
+	idtemplate_method_detail int8 references template_method_detail(idtemplate_method_detail)
+);
+
+-- drop table condition_variable
+CREATE TABLE condition_variable
+(
+	idcondition_variable serial primary key,
+	name_variable varchar(30),
+	operation varchar(10),
+	name_value1 varchar(40),
+	name_value2 varchar(40),
+	idvalue1 int4 references template_method_detail(idtemplate_method_detail),
+	idvalue2 int4 references template_method_detail(idtemplate_method_detail),
+	message varchar(100),
+	status boolean,
+	idtemplate_method int4 references template_method(idtemplate_method),
+	idtemplate_method_detail int8 references template_method_detail(idtemplate_method_detail)
+);
+
+
 
 -- drop table Recep_Sample
 CREATE TABLE Recep_Sample
@@ -456,47 +452,7 @@ CREATE TABLE Recep_Sample
 	UserEdit	varchar(20),
 	DateEdit	date,
 	Status		boolean,
-	date_result	date,
-	cod_type_sample	varchar(5) references type_sample(cod_type_sample),
-	total_amount	decimal(6,2),
-	total_igv	decimal(6,2),
-	total_amount_igv decimal(6,2),
-	amortization	decimal(6,2),
-	flag_isprice	boolean,
-	discount	numeric(6,2)
-);
-
--- drop table Recep_Company_Person
-CREATE TABLE Recep_Company_Person
-(
-	idrecep_company_person bigserial primary key,
-	idcompany	smallint references company(idcompany),
-	idperson	smallint references person(idperson),
-	idrecep_sample  bigint references Recep_Sample(idrecep_sample),
-	person_type	smallint, -- 1:solicitante, 2:Contacto, 3:Atencion
-	enabled_show	boolean,
-	UserNew		varchar(20),
-	DateNew		date,
-	UserEdit	varchar(20),
-	DateEdit	date,
-	Status		boolean
-);
-
--- drop table Recep_Sample_Dispatch
-CREATE TABLE Recep_Sample_Dispatch
-(	
-	idrecep_sample  bigint primary key references Recep_Sample(idrecep_sample),	
-	dispatch_person smallint, -- 0:no seleccionado, 1:seleccionado/pendiente, 2:enviado
-	dispatch_mail	smallint, -- 0:no seleccionado, 1:seleccionado/pendiente, 2:enviado
-	dispatch_curier	smallint, -- 0:no seleccionado, 1:seleccionado/pendiente, 2:enviado
-	dispatch_transport	smallint, -- 0:no seleccionado, 1:seleccionado/pendiente, 2:enviado
-	dispatch_fax	smallint, -- 0:no seleccionado, 1:seleccionado/pendiente, 2:enviado
-	dispatch_otro	smallint, -- 0:no seleccionado, 1:seleccionado/pendiente, 2:enviado
-	UserNew		varchar(20),
-	DateNew		timestamp,
-	UserEdit	varchar(20),
-	DateEdit	timestamp,
-	Status		boolean
+	date_result	date
 );
 
 -- drop table Recep_Sample_Detail
@@ -505,20 +461,20 @@ CREATE TABLE Recep_Sample_Detail
 	idrecep_sample_detail bigserial primary key,
 	order_sample	int2,							-- NEW 
 	cod_sample	varchar(12),
-	procedence	varchar(20),
-	name_sample	varchar(30),
+	procedence	varchar(300),
+	name_sample	varchar(300),
 	amount_weight	decimal(10,5),
 	cod_interno	int8,
-	flag_reject	boolean,	
+	flag_reject	boolean,
+	flag_counter_sample boolean,
 	cost_sample	decimal(6,2),
-	analisys_time	decimal(6,3),
+	analisys_time	int2,
 	flag_control_sample	boolean,					-- NEW 
+	des_link_attach	varchar(1000),
+	link_attach	varchar(300),				-- "\\folder\especificaciones.doc","\\carpeta\fwf.pdf","\\otracarpeta\muestras.pdf"
 	cod_type_sample varchar(5) references type_sample(cod_type_sample),
 	cod_des_sample 	varchar(5) references description_sample(cod_des_sample),
-	idrecep_sample 	int8 references recep_sample(idrecep_sample),
-	flag_counter_sample smallint,
-	flag_envelope_sealed boolean,
-	des_container	varchar(50)
+	idrecep_sample 	int8 references recep_sample(idrecep_sample)
 );
 
 -- drop table recep_elem
@@ -539,55 +495,18 @@ CREATE TABLE Recep_Sample_Report
 (
 	idrecep_sample_report bigserial primary key,
 	order_report	int2,
-	cod_recep_sample_report	bigint,
-	report_status 	int2, -- 1:en creacion, 2:reservado, 3:reportado
+	cod_recep_sample_report	varchar(100),
+	report_status 	int2, -- 1:en creacion, 2:reportado, 3:anulado
 	type_report 	int2, -- 1:parcial, 2:final
 	idrecep_sample 	int8 references Recep_Sample(idrecep_sample),
 	flag_rpt_email	boolean, -- fue enviado por correo
 	flag_rpt_print	boolean, -- fue impreso
 	flag_rpt_pdf	boolean, -- fue impreso en pdf
-	date_report	date,
-	time_report	timestamp,
-	
 	UserNew		varchar(20),
 	DateNew		date,
 	UserEdit	varchar(20),
 	DateEdit	date,
 	Status		boolean
-);
-
--- drop table Recep_sample_program
-CREATE TABLE Recep_Sample_Program
-(
-	idrecep_sample_program bigserial primary key,
-	cod_recep_sample_program bigint,
-	order_report	int2,	
-	idrecep_sample 	int8 references Recep_Sample(idrecep_sample),
-	program_status  int2, -- 1:en creacion, 2:programado
-	date_report	date,
-	time_report	timestamp,
-	UserNew		varchar(20),
-	DateNew		date,
-	UserEdit	varchar(20),
-	DateEdit	date,
-	Status		boolean
-);
-
--- drop table cells_program
-CREATE TABLE Cells_Program
-(
-	idcell_reported bigserial primary key,
-	idrecep_sample_detail_elem int8 references recep_sample_detail_elem(idrecep_sample_detail_elem),
-	idrecep_sample_program int8 references Recep_Sample_Program(idrecep_sample_program),
-	idtemplate_method int4 references template_method(idtemplate_method),
-	idrecep_sample_detail int8 references recep_sample_detail(idrecep_sample_detail),
-	flag_confirm_report boolean,
-	UserNew		varchar(20),
-	DateNew		date,
-	UserEdit	varchar(20),
-	DateEdit	date,
-	Status		boolean,
-	UNIQUE(idrecep_sample_detail_elem, idrecep_sample_program, idtemplate_method, idrecep_sample_detail)
 );
 
 -- drop table Recep_Sample_Detail_Elem
@@ -604,7 +523,6 @@ CREATE TABLE Recep_Sample_Detail_Elem
 	result_analysis decimal(10,5),
 	idunit 		int2 references measurement_unit(idunit),
 	idcompany	int4 references company(idcompany),
-	with_result	boolean, -- false:sin resultado, true:con resultado
 	UNIQUE(idrecep_sample, idrecep_sample_detail, idelement, idtemplate_method, idunit)
 );
 
@@ -616,7 +534,6 @@ CREATE TABLE Cells_Reported
 	idrecep_sample_report int8 references recep_sample_report(idrecep_sample_report),
 	idtemplate_method int4 references template_method(idtemplate_method),
 	idrecep_sample_detail int8 references recep_sample_detail(idrecep_sample_detail),
-	flag_confirm_report boolean,
 	UserNew		varchar(20),
 	DateNew		date,
 	UserEdit	varchar(20),
@@ -625,6 +542,37 @@ CREATE TABLE Cells_Reported
 	UNIQUE(idrecep_sample_detail_elem, idrecep_sample_report, idtemplate_method, idrecep_sample_detail)
 );
 
+-- drop table Batch
+CREATE TABLE Batch
+(
+	idbatch bigserial primary key,
+	name_batch 	varchar(30),
+	num_tray	int8,
+	idtemplate_method int4 references template_method(idtemplate_method),
+	cod_module	varchar(4) references module(cod_module),
+	cod_process	varchar(4) references process(cod_process), -- tabla de procesos
+	cod_area	varchar(4) references area(cod_area),
+	status_process	char(1),	-- W:espera, P:proceso, F:finalizado y N: anulado	
+	status 		boolean,
+	mri_value	numeric(10,6),	
+	description	varchar(100),
+	dateedit	timestamp,
+	useredit	varchar(20)
+);
+
+-- drop table batch_qaqc
+CREATE TABLE Batch_qaqc
+(
+	idbatch_qaqc	bigint primary key references Batch(idbatch),
+	qaqc_mri_value	numeric(10,6),
+	qaqc_blk_value	numeric(10,6),
+	qaqc_mri_error	boolean,
+	qaqc_blk_error	boolean,
+	usernew		varchar(20),
+	datenew		timestamp,
+	useredit	varchar(20),
+	dateedit	timestamp
+);
 
 -- drop table trace_batch
 CREATE TABLE Trace_Batch
@@ -688,9 +636,62 @@ CREATE TABLE Retest
 );
 
 
+-- drop table Batch_result_aa_qaqc 
+CREATE TABLE Batch_Result_AA_Qaqc
+(
+	idbatch_result_aa_qaqc	bigserial primary key,
+	idbatch 	int8 references batch(idbatch),
+	idrecep_sample_detail_elem 	int8 references Recep_Sample_Detail_Elem(idrecep_sample_detail_elem),
+	idrecep_sample_detail 		int8 references Recep_Sample_Detail(idrecep_sample_detail),
+	idrecep_sample 	int8 references recep_sample(idrecep_sample),
+	str_result_analysis 		varchar(15),
+	result_analysis decimal(10,5),
+	status_result 	smallint, 	-- 1:parcial, 2:espera, 3:reensayo, 4:pendiente, 5:aceptado, 6:plausible, 7:incorrecto
+					-- 0:espera, 1:incorrecto, 2:plausible, 3:aceptado
+	idunit 		int2 references measurement_unit(idunit),
+	Qaqc_blk	smallint,
+	Qaqc_par	smallint,
+	Qaqc_mr		smallint,
+	Qaqc_approve_retest	smallint,
+	Qaqc_text_obs		varchar(200),
+	Qaqc_error		smallint,
+	Qaqc_flag_checked	boolean	
+);
 
-----------------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
+-- drop table Batch_Detail_AA
+CREATE TABLE Batch_Detail_AA
+(
+	idbatch_detail_aa bigserial primary key,
+	num_repetition	int2,		
+	idtemplate_method int4 references template_method(idtemplate_method),
+	idrecep_sample 	int8 references recep_sample(idrecep_sample),
+	idrecep_sample_detail_elem int8 references Recep_Sample_Detail_Elem(idrecep_sample_detail_elem),
+	idrecep_sample_detail int8 references Recep_Sample_Detail(idrecep_sample_detail),
+	weight	decimal(10,6),	-- peso
+	reading	decimal(10,6),	-- lectura
+	volumen	decimal(10,6),	-- volumen
+	dilua 	decimal(10,6),	-- dilucion 2
+	dilub	decimal(10,6),	-- dilucion 3
+	factor	decimal(10,6),	-- factor
+	rank	decimal(10,6),	-- rango
+	law	decimal(10,6),	-- ley parcial
+	verify_equip	decimal(10,6), 	-- verificación de equipo
+	verify_curve	decimal(10,6),	-- verificación de curva
+	flag_dila	boolean,
+	flag_dilb	boolean,
+	idbatch 	int8 references batch(idbatch),
+	idtype_rep 	char(1), 	-- C:Configuracion (1,2,4,8 repeticion), R:muestra repeticion
+	sample_mr_blk	char(1),	-- R:mr, B:blanco						-- NEW
+	idmr_detail	int2 references Mr_Detail(idmr_detail),						-- NEW 
+	idmr_jar	int2 references Mr_jar(idmr_jar),						-- NEW
+	UserNew		varchar(20),
+	DateNew		date,
+	UserEdit1	varchar(20),
+	DateEdit1	date,
+	idequipment1	int2,
+	Status		boolean
+);
+
 
 CREATE TABLE template_method_format
 (
@@ -699,6 +700,8 @@ CREATE TABLE template_method_format
 	nom_field character varying(40),
 	num_decimal smallint
 );
+
+CREATE TABLE 
 
 /*
 CREATE TABLE Batch_Detail_VC
@@ -740,7 +743,7 @@ CREATE TABLE Batch_Detail_Process_VC
 CREATE TABLE corr_modules
 (	
 	cod_module	varchar(20) primary key,	
-	name_module	varchar(20),	
+	name_module	varchar(20),
 	prefix		varchar(10),
 	correlative	int4,
 	num_digits	int2,
@@ -748,8 +751,7 @@ CREATE TABLE corr_modules
 	DateNew		date,
 	UserEdit	varchar(50),
 	DateEdit	date,
-	Status		boolean,
-	cod_serie 	varchar(10) references serie(cod_serie)
+	Status		boolean
 );
 
 -- drop table profile_system
@@ -763,341 +765,33 @@ CREATE TABLE profile_system
 CREATE TABLE user_system
 (
 	iduser int2 default nextval('user_system_iduser_seq') primary key,
-	cod_user varchar(30) not null,
-	pwd varchar(32) not null,
+	cod_user varchar(30),	
+	pwd varchar(32),
 	idperson smallint references person(idperson),
+	idprofile smallint references profile_system(idprofile),
 	UserNew		varchar(50),
-	DateNew		timestamp,
+	DateNew		date,
 	UserEdit	varchar(50),
-	DateEdit	timestamp,
+	DateEdit	date,
 	Status		boolean
 );
 
+
 -- drop table process_user_system
+
 CREATE TABLE process_user_system
 (
 	idprocess_user_system int2 default nextval('process_user_system_seq') primary key,
 	cod_process	varchar(4) references process(cod_process),
 	cod_module 	varchar(4) references module(cod_module),
 	cod_area	varchar(4) references area(cod_area),
-	iduser 	smallint references user_system(iduser),
+	iduser 		smallint references user_system(iduser),
+	date_ini	timestamp,
+	date_end	timestamp,		
 	UserNew		varchar(50),
 	DateNew		date,
 	UserEdit	varchar(50),
 	DateEdit	date,
 	Status		boolean
-);
-
--- DROP TABLE configuration_folder
-CREATE TABLE configuration_folder
-(
-	idconfiguration_folder	smallint default nextval('configuration_folder_seq') primary key,
-	folder_name	varchar(100) not null,
-	description	varchar(500) not null,
-	path	varchar(500) not null,
-	folder_type	char(1) not null,
-	usernew		varchar(20) not null,
-	datenew		timestamp not null,
-	useredit	varchar(20) not null,
-	dateedit	timestamp not null,
-	status 		boolean not null
-);
-
--- DROP TABLE documentation
-CREATE TABLE documentation
-(
-	iddocumentation	smallint default nextval('documentation_seq') primary key,
-	idconfiguration_folder	smallint references configuration_folder(idconfiguration_folder) not null, -- autorizaciones, acciones correctivas, procedimiento de ensayo, raiz
-	idtemplate_method	int references template_method(idtemplate_method) null,
-	procedure_type	char(1) ,   	-- T:tareas, M:metodos, G:gestion
-	code		int,
-	name_doc	varchar(100) ,
-	type_doc	char(1) ,	
-	id		int ,
-	parentid	int ,
-	flag_enabled	boolean ,
-	image_index	int ,
-	usernew		varchar(20) ,
-	datenew		timestamp ,
-	useredit	varchar(20) ,
-	dateedit	timestamp ,
-	status 		boolean
-);
-
--- DROP TABLE documentation_user
-CREATE TABLE documentation_user
-(
-	iddocumentation_user	bigserial primary key,	
-	iddocumentation	smallint references documentation(iddocumentation) not null,
-	iduser		smallint references user_system not null,
-	--idconfiguration_folder	smallint references configuration_folder(idconfiguration_folder),
-	--idtemplate_method	int references template_method(idtemplate_method),
-	date_ini	timestamp,
-	date_end	timestamp,
-	name_file	varchar(15),
-	order_file	bigint,
-	extension_file	varchar(5),
-	Prev_authorized boolean,
-	Rank_valid_inmonth int ,
-	usernew		varchar(20),
-	datenew		timestamp,
-	useredit	varchar(20),
-	dateedit	timestamp,
-	status 		boolean
-);
-
--- drop table Document_attach
-CREATE TABLE Document_Recep
-(
-	iddocument_recep serial primary key,
-	name_file	varchar(15),
-	order_file	int,
-	UserNew		varchar(20),
-	DateNew		timestamp,
-	UserEdit	varchar(20),
-	DateEdit	timestamp,
-	Status		boolean
-);
-
--- drop table Recep_Sample_Attach
-CREATE TABLE Recep_Sample_Attach
-(
-	idrecep_sample_attach bigserial primary key,
-	iddocument_recep	int references Document_Recep(iddocument_recep),	
-	idrecep_sample 	int8 references Recep_Sample(idrecep_sample),
-	order_file	smallint,
-	UserNew		varchar(20),
-	DateNew		date,
-	UserEdit	varchar(20),
-	DateEdit	date,
-	Status		boolean
-);
-
--- drop table Cells_attach_file
-CREATE TABLE Cells_attach_file
-(
-	idcells_attach_file bigserial primary key,
-	idrecep_sample_attach bigint references recep_sample_attach(idrecep_sample_attach),
-	idrecep_sample_detail_elem bigint references recep_sample_detail_elem(idrecep_sample_detail_elem),
-	idtemplate_method int4 references template_method(idtemplate_method),
-	UserNew		varchar(20),
-	DateNew		date,
-	UserEdit	varchar(20),
-	DateEdit	date,
-	Status		boolean
-);
-
--- drop table methods_multi
-CREATE TABLE methods_multi
-(
-	id	serial primary key,
-	Elemento_longitud varchar(15),
-	Elemento	varchar(10),
-	Prioridad	int,
-	Longitud	decimal,
-	IDL		decimal,
-	MDL		decimal,
-	Linealidad	decimal,
-	Num_decimal	decimal,
-	STD1		decimal,
-	STD2		decimal,
-	IPC		decimal,
-	LFB		decimal,
-	LFM		decimal,
-	Limite_inferior_MD	decimal,
-	Limite_inferior_MT	decimal,
-	Limite_superior		decimal	
-);
-
--- drop table icp_lecturas
-CREATE TABLE icp_lecturas
-(
-	id 		serial primary key,
-	calibracion	int,
-	elemento	varchar(10),
-	idmuestra	int,
-	muestra		varchar(15),	
-	lectura		varchar(15),
-	dilucion2	varchar(15)
-);
-
--- drop table batchicp
-CREATE TABLE Batchicp
-(
-	idbatchicp 	serial primary key,
-	datecreation	timestamp	
-);
-
--- drop table icpimport
-CREATE TABLE icpimport
-(	
-	idicpimport	serial primary key,
-	idbatchicp	int references batchicp,
-	Methodid 	int,
-	version		int,
-	storagedate	timestamp,
-	calibid 	int,
-	elementname	varchar(6),
-	sampleid	int,
-	name		varchar(30),
-	averageresult	decimal,
-	str_result	varchar(10),
-	dilution2	int
-);
-
--- drop table matrix_group
-CREATE TABLE Matrix_group
-(
-	idmatrix_group	serial primary key,
-	sigla		varchar(10),
-	name_group	varchar(100),
-	status		boolean
-);
-
--- drop table Matrix_item
-CREATE TABLE Matrix_item
-(
-	idmatrix_item	serial primary key,
-	idmatrix_group	int references Matrix_group(idmatrix_group),	
-	sigla		varchar(10),
-	name_item	varchar(100),
-	description	varchar(500),
-	flag_acreditado boolean,
-	status 		boolean
-);
-
--- drop table Decree
-CREATE TABLE Decree
-(
-	iddecree 	serial primary key,
-	cod_decree	varchar(20),	
-	name_decree	varchar(50),
-	description	varchar(500),
-	cumple		varchar(20),
-	nocumple	varchar(20),
-	cumple_onlytest varchar(20),
-	status 		boolean,
-	conclusion	varchar(500)
-);
-
--- drop table Decree_detail
-CREATE TABLE Decree_detail
-(
-	iddecree_detail serial primary key,
-	iddecree	int references decree(iddecree),
-	idunit 		int references measurement_unit(idunit),
-	idtemplate_method	int references template_method(idtemplate_method),
-	parameter	varchar(50),
-	idcondition	int,
-	valor1		varchar(50),
-	valor2		varchar(50),
-	status 		boolean
-);
-
--- drop table destiny_samples
-create table destiny_samples_config
-(
-	iddestiny_samples serial primary key,
-	description	varchar(30),
-	cost_counter_sample	numeric(5,2),	
-	cost_reject_sample	numeric(5,2),
-	time_without_cost	int,		-- meses
-	usernew		varchar(20), 
-	datenew		timestamp,
-	useredit	varchar(20),
-	dateedit	timestamp,
-	status		boolean	
-);
-
--- drop table destiny_sample_recep
-create table destiny_sample_recep
-(
-	iddestiny_sample_recep serial primary key,
-	idrecep_sample	bigint references recep_sample(idrecep_sample),
-	return_after_a_cs 	boolean,
-	return_after_a_re	boolean,
-	return_after_t_cs	boolean,
-	return_after_t_re	boolean,
-	discard_after_t_cs	boolean,
-	discard_after_t_re	boolean,
-	charge_after_t_cs	boolean,
-	charge_after_t_re	boolean,
-	percent_discount	decimal(4,2),
-	usernew		varchar(20),
-	datenew		timestamp,
-	useredit	varchar(20),
-	dateedit	timestamp,
-	status		boolean	
-);
-
--- drop table prep_samples
-create table prep_samples
-(		
-	idrecep_sample_detail bigint references Recep_Sample_Detail(idrecep_sample_detail) primary key,	
-	Flag_humidity_analysis boolean,
-        Flag_reject boolean,
-        Flag_counter_sample smallint,
-	flag_60celsius	boolean,
-	Date_creation	timestamp,
-	-- entrada y salida de la muestra
-	Input_sample_date	timestamp,
-	Input_sample_user	varchar(20),
-	
-	weight_gross	decimal,
-	weight_gross_date	timestamp,
-	weight_gross_user	varchar(20),
-	
-	-- determinación de humedad
-	weight_moisture	decimal,
-	weight_moisture_date	timestamp,
-	weight_moisture_user	varchar(20),
-		
-	weight_dry	decimal,
-	weight_dry_date timestamp,
-	weight_dry_user	varchar(20),
-	
-	percent_moisture decimal,
-	
-	moisture_reject	boolean,
-	moisture_reject_date	timestamp,
-	moisture_reject_user	varchar(20),
-	
-	-- peso de rechazo para almacenamiento
-	weight_gross_reject	decimal,
-	weight_gross_reject_date timestamp,
-	weight_gross_reject_user varchar(20),
-
-	-- marcar salida de muestra a ataque u otra
-	output_flag_sample	boolean,
-	output_flag_cs	boolean,
-	output_flag_re	boolean,
-	output_date_sample timestamp,
-	output_user_sample varchar(20),
-	output_date_cs	timestamp,
-	output_user_cs	varchar(20),
-	output_date_re	timestamp,
-	output_user_re	varchar(20),
-	
-	observation1	varchar(50),
-
-	-- entrada y salida almacen
-	store_input_date_cs	timestamp,
-	store_input_user_cs	varchar(20),
-
-	store_input_date_re	timestamp,
-	store_input_user_re	varchar(20),
-	
-	store_output_date_cs	timestamp,
-	store_output_user_cs	varchar(20),
-
-	store_output_date_re	timestamp,
-	store_output_user_re	varchar(20),
-
-	observation2	varchar(50),
-
-	final_weight_gross 	int, -- 0:sin dato terminal, 1:con dato terminal, 2:completado
-	final_moisture	int,
-	final_reject	int,
-	final_sample_prepared int
 );
 

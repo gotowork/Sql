@@ -2658,159 +2658,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_calib_Insert(int8,int2,varchar,numeric,int4,numeric,numeric);
-CREATE OR REPLACE FUNCTION public.sp_calib_Insert
-(
-	p_idcalib int8 ,
-	p_order_calib int2 = null ,
-	p_name_calib varchar(15) = null ,
-	p_concentration numeric = null ,
-	p_idtemplate_method int4 = null ,
-	p_aliquot numeric = null ,
-	p_volumen numeric = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.calib
-(
-	order_calib,
-	name_calib,
-	concentration,
-	idtemplate_method,
-	aliquot,
-	volumen
-
-)
-VALUES
-(
-	p_order_calib,
-	p_name_calib,
-	p_concentration,
-	p_idtemplate_method,
-	p_aliquot,
-	p_volumen
-
-)returning idcalib into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_Update(int8,int2,varchar,numeric,int4,numeric,numeric);
-CREATE OR REPLACE FUNCTION public.sp_calib_Update
-(
-	p_idcalib int8,
-	p_order_calib int2 = null,
-	p_name_calib varchar(15) = null,
-	p_concentration numeric = null,
-	p_idtemplate_method int4 = null,
-	p_aliquot numeric = null,
-	p_volumen numeric = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.calib
-SET
-	order_calib = p_order_calib,
-	name_calib = p_name_calib,
-	concentration = p_concentration,
-	idtemplate_method = p_idtemplate_method,
-	aliquot = p_aliquot,
-	volumen = p_volumen
- WHERE 
-	idcalib = p_idcalib;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_SelectByPrimaryKey(int8);
-CREATE OR REPLACE FUNCTION public.sp_calib_SelectByPrimaryKey
-(
-	p_idcalib int8
-) returns TABLE ("Idcalib" int8, "Order_calib" int2, "Name_calib" varchar, "Concentration" numeric, "Idtemplate_method" int4, "Aliquot" numeric, "Volumen" numeric
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.calib
-	WHERE 
-			idcalib = p_idcalib;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_calib_SelectAll()
- returns TABLE ("Idcalib" int8, "Order_calib" int2, "Name_calib" varchar, "Concentration" numeric, "Idtemplate_method" int4, "Aliquot" numeric, "Volumen" numeric
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.calib;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_calib_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idcalib int8, order_calib int2, name_calib varchar, concentration numeric, idtemplate_method int4, aliquot numeric, volumen numeric
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.calib WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_DeleteByPrimaryKey(int8);
-CREATE OR REPLACE FUNCTION public.sp_calib_DeleteByPrimaryKey
-(
-	p_idcalib int8
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.calib
- WHERE 
-	idcalib = p_idcalib; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_calib_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.calib WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
 drop function if exists public.sp_price_attach_Insert(int4,int4,int4,varchar,varchar);
 CREATE OR REPLACE FUNCTION public.sp_price_attach_Insert
 (
@@ -5159,179 +5006,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_element_Insert(int2,varchar,varchar,varchar,varchar,bpchar,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_element_Insert
-(
-	p_idelement int2 ,
-	p_cod_element varchar(10) = null ,
-	p_name_element varchar(50) = null ,
-	p_description varchar(200) = null ,
-	p_native_element varchar(5) = null ,
-	p_type_element bpchar = null ,
-	p_usernew varchar(50) = null ,
-	p_datenew date = null ,
-	p_useredit varchar(50) = null ,
-	p_dateedit date = null ,
-	p_status bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.element
-(
-	cod_element,
-	name_element,
-	description,
-	native_element,
-	type_element,
-	usernew,
-	datenew,
-	useredit,
-	dateedit,
-	status
-
-)
-VALUES
-(
-	p_cod_element,
-	p_name_element,
-	p_description,
-	p_native_element,
-	p_type_element,
-	p_usernew,
-	p_datenew,
-	p_useredit,
-	p_dateedit,
-	p_status
-
-)returning idelement into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_element_Update(int2,varchar,varchar,varchar,varchar,bpchar,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_element_Update
-(
-	p_idelement int2,
-	p_cod_element varchar(10) = null,
-	p_name_element varchar(50) = null,
-	p_description varchar(200) = null,
-	p_native_element varchar(5) = null,
-	p_type_element bpchar = null,
-	p_usernew varchar(50) = null,
-	p_datenew date = null,
-	p_useredit varchar(50) = null,
-	p_dateedit date = null,
-	p_status bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.element
-SET
-	cod_element = p_cod_element,
-	name_element = p_name_element,
-	description = p_description,
-	native_element = p_native_element,
-	type_element = p_type_element,
-	usernew = p_usernew,
-	datenew = p_datenew,
-	useredit = p_useredit,
-	dateedit = p_dateedit,
-	status = p_status
- WHERE 
-	idelement = p_idelement;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_element_SelectByPrimaryKey(int2);
-CREATE OR REPLACE FUNCTION public.sp_element_SelectByPrimaryKey
-(
-	p_idelement int2
-) returns TABLE ("Idelement" int2, "Cod_element" varchar, "Name_element" varchar, "Description" varchar, "Native_element" varchar, "Type_element" bpchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.element
-	WHERE 
-			idelement = p_idelement;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_element_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_element_SelectAll()
- returns TABLE ("Idelement" int2, "Cod_element" varchar, "Name_element" varchar, "Description" varchar, "Native_element" varchar, "Type_element" bpchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.element;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_element_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_element_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idelement int2, cod_element varchar, name_element varchar, description varchar, native_element varchar, type_element bpchar, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.element WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_element_DeleteByPrimaryKey(int2);
-CREATE OR REPLACE FUNCTION public.sp_element_DeleteByPrimaryKey
-(
-	p_idelement int2
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.element
- WHERE 
-	idelement = p_idelement; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_element_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_element_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.element WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
 drop function if exists public.sp_configuration_folder_Insert(int2,varchar,varchar,varchar,bpchar,varchar,timestamp,varchar,timestamp,bool);
 CREATE OR REPLACE FUNCTION public.sp_configuration_folder_Insert
 (
@@ -6328,144 +6002,6 @@ BEGIN
 
 
 	EXECUTE 'DELETE FROM public.methods_multi WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_reactive_Insert(int4,varchar,varchar,numeric);
-CREATE OR REPLACE FUNCTION public.sp_reactive_Insert
-(
-	p_idreactive int4 ,
-	p_reactive_name varchar(40) = null ,
-	p_chemical_formula varchar(15) = null ,
-	p_weight_molecular numeric = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.reactive
-(
-	reactive_name,
-	chemical_formula,
-	weight_molecular
-
-)
-VALUES
-(
-	p_reactive_name,
-	p_chemical_formula,
-	p_weight_molecular
-
-)returning idreactive into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_reactive_Update(int4,varchar,varchar,numeric);
-CREATE OR REPLACE FUNCTION public.sp_reactive_Update
-(
-	p_idreactive int4,
-	p_reactive_name varchar(40) = null,
-	p_chemical_formula varchar(15) = null,
-	p_weight_molecular numeric = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.reactive
-SET
-	reactive_name = p_reactive_name,
-	chemical_formula = p_chemical_formula,
-	weight_molecular = p_weight_molecular
- WHERE 
-	idreactive = p_idreactive;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_reactive_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_reactive_SelectByPrimaryKey
-(
-	p_idreactive int4
-) returns TABLE ("Idreactive" int4, "Reactive_name" varchar, "Chemical_formula" varchar, "Weight_molecular" numeric
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.reactive
-	WHERE 
-			idreactive = p_idreactive;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_reactive_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_reactive_SelectAll()
- returns TABLE ("Idreactive" int4, "Reactive_name" varchar, "Chemical_formula" varchar, "Weight_molecular" numeric
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.reactive;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_reactive_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_reactive_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idreactive int4, reactive_name varchar, chemical_formula varchar, weight_molecular numeric
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.reactive WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_reactive_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_reactive_DeleteByPrimaryKey
-(
-	p_idreactive int4
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.reactive
- WHERE 
-	idreactive = p_idreactive; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_reactive_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_reactive_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.reactive WHERE ' || FieldName  ||' = '|| Value 
 	USING Value;
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
@@ -9488,6 +9024,219 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+drop function if exists public.sp_mr_detail_Insert(int2,int2,int2,varchar,varchar,numeric,numeric,int2,varchar,numeric,numeric,bool,varchar,varchar,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_mr_detail_Insert
+(
+	p_idmr_detail int2 ,
+	p_idmr int2 = null ,
+	p_analyte int2 = null ,
+	p_cod_element varchar(10) = null ,
+	p_nom_detail varchar(10) = null ,
+	p_incertitude numeric = null ,
+	p_nominal_value numeric = null ,
+	p_idunit1 int2 = null ,
+	p_document_ref varchar(1000) = null ,
+	p_dev numeric = null ,
+	p_dev_labs numeric = null ,
+	p_flag_provitional bool = null ,
+	p_cod_digestion_method varchar(5) = null ,
+	p_observation varchar(100) = null ,
+	p_usernew varchar(20) = null ,
+	p_datenew date = null ,
+	p_useredit varchar(20) = null ,
+	p_dateedit date = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.mr_detail
+(
+	idmr,
+	analyte,
+	cod_element,
+	nom_detail,
+	incertitude,
+	nominal_value,
+	idunit1,
+	document_ref,
+	dev,
+	dev_labs,
+	flag_provitional,
+	cod_digestion_method,
+	observation,
+	usernew,
+	datenew,
+	useredit,
+	dateedit,
+	status
+
+)
+VALUES
+(
+	p_idmr,
+	p_analyte,
+	p_cod_element,
+	p_nom_detail,
+	p_incertitude,
+	p_nominal_value,
+	p_idunit1,
+	p_document_ref,
+	p_dev,
+	p_dev_labs,
+	p_flag_provitional,
+	p_cod_digestion_method,
+	p_observation,
+	p_usernew,
+	p_datenew,
+	p_useredit,
+	p_dateedit,
+	p_status
+
+)returning idmr_detail into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_mr_detail_Update(int2,int2,int2,varchar,varchar,numeric,numeric,int2,varchar,numeric,numeric,bool,varchar,varchar,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_mr_detail_Update
+(
+	p_idmr_detail int2,
+	p_idmr int2 = null,
+	p_analyte int2 = null,
+	p_cod_element varchar(10) = null,
+	p_nom_detail varchar(10) = null,
+	p_incertitude numeric = null,
+	p_nominal_value numeric = null,
+	p_idunit1 int2 = null,
+	p_document_ref varchar(1000) = null,
+	p_dev numeric = null,
+	p_dev_labs numeric = null,
+	p_flag_provitional bool = null,
+	p_cod_digestion_method varchar(5) = null,
+	p_observation varchar(100) = null,
+	p_usernew varchar(20) = null,
+	p_datenew date = null,
+	p_useredit varchar(20) = null,
+	p_dateedit date = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.mr_detail
+SET
+	idmr = p_idmr,
+	analyte = p_analyte,
+	cod_element = p_cod_element,
+	nom_detail = p_nom_detail,
+	incertitude = p_incertitude,
+	nominal_value = p_nominal_value,
+	idunit1 = p_idunit1,
+	document_ref = p_document_ref,
+	dev = p_dev,
+	dev_labs = p_dev_labs,
+	flag_provitional = p_flag_provitional,
+	cod_digestion_method = p_cod_digestion_method,
+	observation = p_observation,
+	usernew = p_usernew,
+	datenew = p_datenew,
+	useredit = p_useredit,
+	dateedit = p_dateedit,
+	status = p_status
+ WHERE 
+	idmr_detail = p_idmr_detail;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_mr_detail_SelectByPrimaryKey(int2);
+CREATE OR REPLACE FUNCTION public.sp_mr_detail_SelectByPrimaryKey
+(
+	p_idmr_detail int2
+) returns TABLE ("Idmr_detail" int2, "Idmr" int2, "Analyte" int2, "Cod_element" varchar, "Nom_detail" varchar, "Incertitude" numeric, "Nominal_value" numeric, "Idunit1" int2, "Document_ref" varchar, "Dev" numeric, "Dev_labs" numeric, "Flag_provitional" bool, "Cod_digestion_method" varchar, "Observation" varchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.mr_detail
+	WHERE 
+			idmr_detail = p_idmr_detail;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_mr_detail_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_mr_detail_SelectAll()
+ returns TABLE ("Idmr_detail" int2, "Idmr" int2, "Analyte" int2, "Cod_element" varchar, "Nom_detail" varchar, "Incertitude" numeric, "Nominal_value" numeric, "Idunit1" int2, "Document_ref" varchar, "Dev" numeric, "Dev_labs" numeric, "Flag_provitional" bool, "Cod_digestion_method" varchar, "Observation" varchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.mr_detail;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_mr_detail_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_mr_detail_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idmr_detail int2, idmr int2, analyte int2, cod_element varchar, nom_detail varchar, incertitude numeric, nominal_value numeric, idunit1 int2, document_ref varchar, dev numeric, dev_labs numeric, flag_provitional bool, cod_digestion_method varchar, observation varchar, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.mr_detail WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_mr_detail_DeleteByPrimaryKey(int2);
+CREATE OR REPLACE FUNCTION public.sp_mr_detail_DeleteByPrimaryKey
+(
+	p_idmr_detail int2
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.mr_detail
+ WHERE 
+	idmr_detail = p_idmr_detail; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_mr_detail_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_mr_detail_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.mr_detail WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
 drop function if exists public.sp_matrix_item_Insert(int4,int4,varchar,varchar,varchar,bool,bool);
 CREATE OR REPLACE FUNCTION public.sp_matrix_item_Insert
 (
@@ -9634,6 +9383,179 @@ BEGIN
 
 
 	EXECUTE 'DELETE FROM public.matrix_item WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_element_Insert(int2,varchar,varchar,varchar,varchar,bpchar,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_element_Insert
+(
+	p_idelement int2 ,
+	p_cod_element varchar(10) = null ,
+	p_name_element varchar(50) = null ,
+	p_description varchar(200) = null ,
+	p_native_element varchar(5) = null ,
+	p_type_element bpchar = null ,
+	p_usernew varchar(50) = null ,
+	p_datenew date = null ,
+	p_useredit varchar(50) = null ,
+	p_dateedit date = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.element
+(
+	cod_element,
+	name_element,
+	description,
+	native_element,
+	type_element,
+	usernew,
+	datenew,
+	useredit,
+	dateedit,
+	status
+
+)
+VALUES
+(
+	p_cod_element,
+	p_name_element,
+	p_description,
+	p_native_element,
+	p_type_element,
+	p_usernew,
+	p_datenew,
+	p_useredit,
+	p_dateedit,
+	p_status
+
+)returning idelement into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_element_Update(int2,varchar,varchar,varchar,varchar,bpchar,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_element_Update
+(
+	p_idelement int2,
+	p_cod_element varchar(10) = null,
+	p_name_element varchar(50) = null,
+	p_description varchar(200) = null,
+	p_native_element varchar(5) = null,
+	p_type_element bpchar = null,
+	p_usernew varchar(50) = null,
+	p_datenew date = null,
+	p_useredit varchar(50) = null,
+	p_dateedit date = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.element
+SET
+	cod_element = p_cod_element,
+	name_element = p_name_element,
+	description = p_description,
+	native_element = p_native_element,
+	type_element = p_type_element,
+	usernew = p_usernew,
+	datenew = p_datenew,
+	useredit = p_useredit,
+	dateedit = p_dateedit,
+	status = p_status
+ WHERE 
+	idelement = p_idelement;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_element_SelectByPrimaryKey(int2);
+CREATE OR REPLACE FUNCTION public.sp_element_SelectByPrimaryKey
+(
+	p_idelement int2
+) returns TABLE ("Idelement" int2, "Cod_element" varchar, "Name_element" varchar, "Description" varchar, "Native_element" varchar, "Type_element" bpchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.element
+	WHERE 
+			idelement = p_idelement;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_element_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_element_SelectAll()
+ returns TABLE ("Idelement" int2, "Cod_element" varchar, "Name_element" varchar, "Description" varchar, "Native_element" varchar, "Type_element" bpchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.element;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_element_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_element_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idelement int2, cod_element varchar, name_element varchar, description varchar, native_element varchar, type_element bpchar, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.element WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_element_DeleteByPrimaryKey(int2);
+CREATE OR REPLACE FUNCTION public.sp_element_DeleteByPrimaryKey
+(
+	p_idelement int2
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.element
+ WHERE 
+	idelement = p_idelement; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_element_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_element_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.element WHERE ' || FieldName  ||' = '|| Value 
 	USING Value;
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
@@ -10025,219 +9947,6 @@ BEGIN
 
 
 	EXECUTE 'DELETE FROM public.destiny_sample_recep WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_mr_detail_Insert(int2,int2,int2,varchar,varchar,numeric,numeric,int2,varchar,numeric,numeric,bool,varchar,varchar,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_mr_detail_Insert
-(
-	p_idmr_detail int2 ,
-	p_idmr int2 = null ,
-	p_analyte int2 = null ,
-	p_cod_element varchar(10) = null ,
-	p_nom_detail varchar(10) = null ,
-	p_incertitude numeric = null ,
-	p_nominal_value numeric = null ,
-	p_idunit1 int2 = null ,
-	p_document_ref varchar(1000) = null ,
-	p_dev numeric = null ,
-	p_dev_labs numeric = null ,
-	p_flag_provitional bool = null ,
-	p_cod_digestion_method varchar(5) = null ,
-	p_observation varchar(100) = null ,
-	p_usernew varchar(20) = null ,
-	p_datenew date = null ,
-	p_useredit varchar(20) = null ,
-	p_dateedit date = null ,
-	p_status bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.mr_detail
-(
-	idmr,
-	analyte,
-	cod_element,
-	nom_detail,
-	incertitude,
-	nominal_value,
-	idunit1,
-	document_ref,
-	dev,
-	dev_labs,
-	flag_provitional,
-	cod_digestion_method,
-	observation,
-	usernew,
-	datenew,
-	useredit,
-	dateedit,
-	status
-
-)
-VALUES
-(
-	p_idmr,
-	p_analyte,
-	p_cod_element,
-	p_nom_detail,
-	p_incertitude,
-	p_nominal_value,
-	p_idunit1,
-	p_document_ref,
-	p_dev,
-	p_dev_labs,
-	p_flag_provitional,
-	p_cod_digestion_method,
-	p_observation,
-	p_usernew,
-	p_datenew,
-	p_useredit,
-	p_dateedit,
-	p_status
-
-)returning idmr_detail into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_mr_detail_Update(int2,int2,int2,varchar,varchar,numeric,numeric,int2,varchar,numeric,numeric,bool,varchar,varchar,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_mr_detail_Update
-(
-	p_idmr_detail int2,
-	p_idmr int2 = null,
-	p_analyte int2 = null,
-	p_cod_element varchar(10) = null,
-	p_nom_detail varchar(10) = null,
-	p_incertitude numeric = null,
-	p_nominal_value numeric = null,
-	p_idunit1 int2 = null,
-	p_document_ref varchar(1000) = null,
-	p_dev numeric = null,
-	p_dev_labs numeric = null,
-	p_flag_provitional bool = null,
-	p_cod_digestion_method varchar(5) = null,
-	p_observation varchar(100) = null,
-	p_usernew varchar(20) = null,
-	p_datenew date = null,
-	p_useredit varchar(20) = null,
-	p_dateedit date = null,
-	p_status bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.mr_detail
-SET
-	idmr = p_idmr,
-	analyte = p_analyte,
-	cod_element = p_cod_element,
-	nom_detail = p_nom_detail,
-	incertitude = p_incertitude,
-	nominal_value = p_nominal_value,
-	idunit1 = p_idunit1,
-	document_ref = p_document_ref,
-	dev = p_dev,
-	dev_labs = p_dev_labs,
-	flag_provitional = p_flag_provitional,
-	cod_digestion_method = p_cod_digestion_method,
-	observation = p_observation,
-	usernew = p_usernew,
-	datenew = p_datenew,
-	useredit = p_useredit,
-	dateedit = p_dateedit,
-	status = p_status
- WHERE 
-	idmr_detail = p_idmr_detail;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_mr_detail_SelectByPrimaryKey(int2);
-CREATE OR REPLACE FUNCTION public.sp_mr_detail_SelectByPrimaryKey
-(
-	p_idmr_detail int2
-) returns TABLE ("Idmr_detail" int2, "Idmr" int2, "Analyte" int2, "Cod_element" varchar, "Nom_detail" varchar, "Incertitude" numeric, "Nominal_value" numeric, "Idunit1" int2, "Document_ref" varchar, "Dev" numeric, "Dev_labs" numeric, "Flag_provitional" bool, "Cod_digestion_method" varchar, "Observation" varchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.mr_detail
-	WHERE 
-			idmr_detail = p_idmr_detail;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_mr_detail_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_mr_detail_SelectAll()
- returns TABLE ("Idmr_detail" int2, "Idmr" int2, "Analyte" int2, "Cod_element" varchar, "Nom_detail" varchar, "Incertitude" numeric, "Nominal_value" numeric, "Idunit1" int2, "Document_ref" varchar, "Dev" numeric, "Dev_labs" numeric, "Flag_provitional" bool, "Cod_digestion_method" varchar, "Observation" varchar, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.mr_detail;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_mr_detail_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_mr_detail_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idmr_detail int2, idmr int2, analyte int2, cod_element varchar, nom_detail varchar, incertitude numeric, nominal_value numeric, idunit1 int2, document_ref varchar, dev numeric, dev_labs numeric, flag_provitional bool, cod_digestion_method varchar, observation varchar, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.mr_detail WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_mr_detail_DeleteByPrimaryKey(int2);
-CREATE OR REPLACE FUNCTION public.sp_mr_detail_DeleteByPrimaryKey
-(
-	p_idmr_detail int2
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.mr_detail
- WHERE 
-	idmr_detail = p_idmr_detail; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_mr_detail_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_mr_detail_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.mr_detail WHERE ' || FieldName  ||' = '|| Value 
 	USING Value;
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
@@ -11761,127 +11470,127 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_solution_methods_Insert(int4,int4,int4,bool);
-CREATE OR REPLACE FUNCTION public.sp_solution_methods_Insert
+drop function if exists public.sp_reactive_Insert(int4,varchar,varchar,numeric);
+CREATE OR REPLACE FUNCTION public.sp_reactive_Insert
 (
-	p_idsolution_methods int4 ,
-	p_idsolution int4 = null ,
-	p_idtemplate_method int4 = null ,
-	p_status bool = null 
+	p_idreactive int4 ,
+	p_reactive_name varchar(40) = null ,
+	p_chemical_formula varchar(15) = null ,
+	p_weight_molecular numeric = null 
 
 )returns int8 AS $$
 Declare result int8;
 BEGIN
 
-INSERT INTO public.solution_methods
+INSERT INTO public.reactive
 (
-	idsolution,
-	idtemplate_method,
-	status
+	reactive_name,
+	chemical_formula,
+	weight_molecular
 
 )
 VALUES
 (
-	p_idsolution,
-	p_idtemplate_method,
-	p_status
+	p_reactive_name,
+	p_chemical_formula,
+	p_weight_molecular
 
-)returning idsolution_methods into result;
+)returning idreactive into result;
 	return result;
 
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_solution_methods_Update(int4,int4,int4,bool);
-CREATE OR REPLACE FUNCTION public.sp_solution_methods_Update
+drop function if exists public.sp_reactive_Update(int4,varchar,varchar,numeric);
+CREATE OR REPLACE FUNCTION public.sp_reactive_Update
 (
-	p_idsolution_methods int4,
-	p_idsolution int4 = null,
-	p_idtemplate_method int4 = null,
-	p_status bool = null
+	p_idreactive int4,
+	p_reactive_name varchar(40) = null,
+	p_chemical_formula varchar(15) = null,
+	p_weight_molecular numeric = null
 
 )returns int8 AS $$
 Declare result int8;
 BEGIN
 
-UPDATE public.solution_methods
+UPDATE public.reactive
 SET
-	idsolution = p_idsolution,
-	idtemplate_method = p_idtemplate_method,
-	status = p_status
+	reactive_name = p_reactive_name,
+	chemical_formula = p_chemical_formula,
+	weight_molecular = p_weight_molecular
  WHERE 
-	idsolution_methods = p_idsolution_methods;
+	idreactive = p_idreactive;
 	get diagnostics result = ROW_COUNT;
 	return result;
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_solution_methods_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_solution_methods_SelectByPrimaryKey
+drop function if exists public.sp_reactive_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_reactive_SelectByPrimaryKey
 (
-	p_idsolution_methods int4
-) returns TABLE ("Idsolution_methods" int4, "Idsolution" int4, "Idtemplate_method" int4, "Status" bool
+	p_idreactive int4
+) returns TABLE ("Idreactive" int4, "Reactive_name" varchar, "Chemical_formula" varchar, "Weight_molecular" numeric
 )AS $$
 BEGIN
 
 	return query
 	SELECT *
-	FROM public.solution_methods
+	FROM public.reactive
 	WHERE 
-			idsolution_methods = p_idsolution_methods;
+			idreactive = p_idreactive;
 
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_solution_methods_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_solution_methods_SelectAll()
- returns TABLE ("Idsolution_methods" int4, "Idsolution" int4, "Idtemplate_method" int4, "Status" bool
+drop function if exists public.sp_reactive_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_reactive_SelectAll()
+ returns TABLE ("Idreactive" int4, "Reactive_name" varchar, "Chemical_formula" varchar, "Weight_molecular" numeric
 )AS $$
 BEGIN
 
 	return query
 	SELECT *
-	FROM public.solution_methods;
+	FROM public.reactive;
 
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_solution_methods_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_solution_methods_SelectByField
+drop function if exists public.sp_reactive_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_reactive_SelectByField
 (
 	FieldName varchar(100),
 	Value varchar(1000)
 )
- returns TABLE (idsolution_methods int4, idsolution int4, idtemplate_method int4, status bool
+ returns TABLE (idreactive int4, reactive_name varchar, chemical_formula varchar, weight_molecular numeric
 )AS $$
 BEGIN
 
 
-	return query EXECUTE 'SELECT * FROM public.solution_methods WHERE '|| FieldName ||' = '|| Value 
+	return query EXECUTE 'SELECT * FROM public.reactive WHERE '|| FieldName ||' = '|| Value 
 	USING Value;
 
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_solution_methods_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_solution_methods_DeleteByPrimaryKey
+drop function if exists public.sp_reactive_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_reactive_DeleteByPrimaryKey
 (
-	p_idsolution_methods int4
+	p_idreactive int4
 )
 returns int4 AS $$
 declare result int;
 BEGIN
-DELETE FROM public.solution_methods
+DELETE FROM public.reactive
  WHERE 
-	idsolution_methods = p_idsolution_methods; 
+	idreactive = p_idreactive; 
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
 
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_solution_methods_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_solution_methods_DeleteByField
+drop function if exists public.sp_reactive_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_reactive_DeleteByField
 (
 	FieldName varchar(100),
 	Value varchar(1000)
@@ -11891,368 +11600,7 @@ declare result int;
 BEGIN
 
 
-	EXECUTE 'DELETE FROM public.solution_methods WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_set_calibs_Insert(int4,varchar,numeric,numeric,numeric,int4,int4);
-CREATE OR REPLACE FUNCTION public.sp_set_calibs_Insert
-(
-	p_idset_calibs int4 ,
-	p_calib_group_name varchar(20) = null ,
-	p_r numeric = null ,
-	p_a numeric = null ,
-	p_b numeric = null ,
-	p_idtemplate_method int4 = null ,
-	p_idgroup_solution int4 = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.set_calibs
-(
-	calib_group_name,
-	r,
-	a,
-	b,
-	idtemplate_method,
-	idgroup_solution
-
-)
-VALUES
-(
-	p_calib_group_name,
-	p_r,
-	p_a,
-	p_b,
-	p_idtemplate_method,
-	p_idgroup_solution
-
-)returning idset_calibs into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_set_calibs_Update(int4,varchar,numeric,numeric,numeric,int4,int4);
-CREATE OR REPLACE FUNCTION public.sp_set_calibs_Update
-(
-	p_idset_calibs int4,
-	p_calib_group_name varchar(20) = null,
-	p_r numeric = null,
-	p_a numeric = null,
-	p_b numeric = null,
-	p_idtemplate_method int4 = null,
-	p_idgroup_solution int4 = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.set_calibs
-SET
-	calib_group_name = p_calib_group_name,
-	r = p_r,
-	a = p_a,
-	b = p_b,
-	idtemplate_method = p_idtemplate_method,
-	idgroup_solution = p_idgroup_solution
- WHERE 
-	idset_calibs = p_idset_calibs;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_set_calibs_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_set_calibs_SelectByPrimaryKey
-(
-	p_idset_calibs int4
-) returns TABLE ("Idset_calibs" int4, "Calib_group_name" varchar, "R" numeric, "A" numeric, "B" numeric, "Idtemplate_method" int4, "Idgroup_solution" int4
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.set_calibs
-	WHERE 
-			idset_calibs = p_idset_calibs;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_set_calibs_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_set_calibs_SelectAll()
- returns TABLE ("Idset_calibs" int4, "Calib_group_name" varchar, "R" numeric, "A" numeric, "B" numeric, "Idtemplate_method" int4, "Idgroup_solution" int4
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.set_calibs;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_set_calibs_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_set_calibs_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idset_calibs int4, calib_group_name varchar, r numeric, a numeric, b numeric, idtemplate_method int4, idgroup_solution int4
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.set_calibs WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_set_calibs_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_set_calibs_DeleteByPrimaryKey
-(
-	p_idset_calibs int4
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.set_calibs
- WHERE 
-	idset_calibs = p_idset_calibs; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_set_calibs_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_set_calibs_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.set_calibs WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_Insert(int4,int2,varchar,int2,varchar,varchar,varchar,bpchar,bool,int4,varchar,varchar,numeric,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_template_method_Insert
-(
-	p_idtemplate_method int4 ,
-	p_num_version int2 = null ,
-	p_cod_template_method varchar(20) = null ,
-	p_cod_repetition int2 = null ,
-	p_title varchar(200) = null ,
-	p_abbreviation varchar(15) = null ,
-	p_name_method varchar(50) = null ,
-	p_type_analisys bpchar = null ,
-	p_recognized bool = null ,
-	p_idelement int4 = null ,
-	p_cod_type_sample varchar(5) = null ,
-	p_cod_digestion_method varchar(5) = null ,
-	p_cost_method numeric = null ,
-	p_usernew varchar(20) = null ,
-	p_datenew date = null ,
-	p_useredit varchar(20) = null ,
-	p_dateedit date = null ,
-	p_status bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.template_method
-(
-	num_version,
-	cod_template_method,
-	cod_repetition,
-	title,
-	abbreviation,
-	name_method,
-	type_analisys,
-	recognized,
-	idelement,
-	cod_type_sample,
-	cod_digestion_method,
-	cost_method,
-	usernew,
-	datenew,
-	useredit,
-	dateedit,
-	status
-
-)
-VALUES
-(
-	p_num_version,
-	p_cod_template_method,
-	p_cod_repetition,
-	p_title,
-	p_abbreviation,
-	p_name_method,
-	p_type_analisys,
-	p_recognized,
-	p_idelement,
-	p_cod_type_sample,
-	p_cod_digestion_method,
-	p_cost_method,
-	p_usernew,
-	p_datenew,
-	p_useredit,
-	p_dateedit,
-	p_status
-
-)returning idtemplate_method into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_Update(int4,int2,varchar,int2,varchar,varchar,varchar,bpchar,bool,int4,varchar,varchar,numeric,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_template_method_Update
-(
-	p_idtemplate_method int4,
-	p_num_version int2 = null,
-	p_cod_template_method varchar(20) = null,
-	p_cod_repetition int2 = null,
-	p_title varchar(200) = null,
-	p_abbreviation varchar(15) = null,
-	p_name_method varchar(50) = null,
-	p_type_analisys bpchar = null,
-	p_recognized bool = null,
-	p_idelement int4 = null,
-	p_cod_type_sample varchar(5) = null,
-	p_cod_digestion_method varchar(5) = null,
-	p_cost_method numeric = null,
-	p_usernew varchar(20) = null,
-	p_datenew date = null,
-	p_useredit varchar(20) = null,
-	p_dateedit date = null,
-	p_status bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.template_method
-SET
-	num_version = p_num_version,
-	cod_template_method = p_cod_template_method,
-	cod_repetition = p_cod_repetition,
-	title = p_title,
-	abbreviation = p_abbreviation,
-	name_method = p_name_method,
-	type_analisys = p_type_analisys,
-	recognized = p_recognized,
-	idelement = p_idelement,
-	cod_type_sample = p_cod_type_sample,
-	cod_digestion_method = p_cod_digestion_method,
-	cost_method = p_cost_method,
-	usernew = p_usernew,
-	datenew = p_datenew,
-	useredit = p_useredit,
-	dateedit = p_dateedit,
-	status = p_status
- WHERE 
-	idtemplate_method = p_idtemplate_method;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_template_method_SelectByPrimaryKey
-(
-	p_idtemplate_method int4
-) returns TABLE ("Idtemplate_method" int4, "Num_version" int2, "Cod_template_method" varchar, "Cod_repetition" int2, "Title" varchar, "Abbreviation" varchar, "Name_method" varchar, "Type_analisys" bpchar, "Recognized" bool, "Idelement" int4, "Cod_type_sample" varchar, "Cod_digestion_method" varchar, "Cost_method" numeric, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.template_method
-	WHERE 
-			idtemplate_method = p_idtemplate_method;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_template_method_SelectAll()
- returns TABLE ("Idtemplate_method" int4, "Num_version" int2, "Cod_template_method" varchar, "Cod_repetition" int2, "Title" varchar, "Abbreviation" varchar, "Name_method" varchar, "Type_analisys" bpchar, "Recognized" bool, "Idelement" int4, "Cod_type_sample" varchar, "Cod_digestion_method" varchar, "Cost_method" numeric, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.template_method;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_template_method_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idtemplate_method int4, num_version int2, cod_template_method varchar, cod_repetition int2, title varchar, abbreviation varchar, name_method varchar, type_analisys bpchar, recognized bool, idelement int4, cod_type_sample varchar, cod_digestion_method varchar, cost_method numeric, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.template_method WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_template_method_DeleteByPrimaryKey
-(
-	p_idtemplate_method int4
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.template_method
- WHERE 
-	idtemplate_method = p_idtemplate_method; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_template_method_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.template_method WHERE ' || FieldName  ||' = '|| Value 
+	EXECUTE 'DELETE FROM public.reactive WHERE ' || FieldName  ||' = '|| Value 
 	USING Value;
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
@@ -12750,783 +12098,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_calib_std_Insert(int8,int8,numeric,numeric,numeric,int4,int4,int4);
-CREATE OR REPLACE FUNCTION public.sp_calib_std_Insert
-(
-	p_idcalib_std int8 ,
-	p_idcalib int8 = null ,
-	p_absorbance numeric = null ,
-	p_absorbance_previus numeric = null ,
-	p_concentration numeric = null ,
-	p_idset_calibs int4 = null ,
-	p_idtemplate_method int4 = null ,
-	p_idgroup_solution int4 = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.calib_std
-(
-	idcalib,
-	absorbance,
-	absorbance_previus,
-	concentration,
-	idset_calibs,
-	idtemplate_method,
-	idgroup_solution
-
-)
-VALUES
-(
-	p_idcalib,
-	p_absorbance,
-	p_absorbance_previus,
-	p_concentration,
-	p_idset_calibs,
-	p_idtemplate_method,
-	p_idgroup_solution
-
-)returning idcalib_std into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_std_Update(int8,int8,numeric,numeric,numeric,int4,int4,int4);
-CREATE OR REPLACE FUNCTION public.sp_calib_std_Update
-(
-	p_idcalib_std int8,
-	p_idcalib int8 = null,
-	p_absorbance numeric = null,
-	p_absorbance_previus numeric = null,
-	p_concentration numeric = null,
-	p_idset_calibs int4 = null,
-	p_idtemplate_method int4 = null,
-	p_idgroup_solution int4 = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.calib_std
-SET
-	idcalib = p_idcalib,
-	absorbance = p_absorbance,
-	absorbance_previus = p_absorbance_previus,
-	concentration = p_concentration,
-	idset_calibs = p_idset_calibs,
-	idtemplate_method = p_idtemplate_method,
-	idgroup_solution = p_idgroup_solution
- WHERE 
-	idcalib_std = p_idcalib_std;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_std_SelectByPrimaryKey(int8);
-CREATE OR REPLACE FUNCTION public.sp_calib_std_SelectByPrimaryKey
-(
-	p_idcalib_std int8
-) returns TABLE ("Idcalib_std" int8, "Idcalib" int8, "Absorbance" numeric, "Absorbance_previus" numeric, "Concentration" numeric, "Idset_calibs" int4, "Idtemplate_method" int4, "Idgroup_solution" int4
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.calib_std
-	WHERE 
-			idcalib_std = p_idcalib_std;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_std_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_calib_std_SelectAll()
- returns TABLE ("Idcalib_std" int8, "Idcalib" int8, "Absorbance" numeric, "Absorbance_previus" numeric, "Concentration" numeric, "Idset_calibs" int4, "Idtemplate_method" int4, "Idgroup_solution" int4
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.calib_std;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_std_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_calib_std_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idcalib_std int8, idcalib int8, absorbance numeric, absorbance_previus numeric, concentration numeric, idset_calibs int4, idtemplate_method int4, idgroup_solution int4
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.calib_std WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_std_DeleteByPrimaryKey(int8);
-CREATE OR REPLACE FUNCTION public.sp_calib_std_DeleteByPrimaryKey
-(
-	p_idcalib_std int8
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.calib_std
- WHERE 
-	idcalib_std = p_idcalib_std; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_calib_std_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_calib_std_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.calib_std WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_methods_Insert(int4,int4,int4,bool);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_methods_Insert
-(
-	p_idgroup_solution_methods int4 ,
-	p_idgroup_solution int4 = null ,
-	p_idtemplate_method int4 = null ,
-	p_status bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.group_solution_methods
-(
-	idgroup_solution,
-	idtemplate_method,
-	status
-
-)
-VALUES
-(
-	p_idgroup_solution,
-	p_idtemplate_method,
-	p_status
-
-)returning idgroup_solution_methods into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_methods_Update(int4,int4,int4,bool);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_methods_Update
-(
-	p_idgroup_solution_methods int4,
-	p_idgroup_solution int4 = null,
-	p_idtemplate_method int4 = null,
-	p_status bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.group_solution_methods
-SET
-	idgroup_solution = p_idgroup_solution,
-	idtemplate_method = p_idtemplate_method,
-	status = p_status
- WHERE 
-	idgroup_solution_methods = p_idgroup_solution_methods;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_methods_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_methods_SelectByPrimaryKey
-(
-	p_idgroup_solution_methods int4
-) returns TABLE ("Idgroup_solution_methods" int4, "Idgroup_solution" int4, "Idtemplate_method" int4, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.group_solution_methods
-	WHERE 
-			idgroup_solution_methods = p_idgroup_solution_methods;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_methods_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_group_solution_methods_SelectAll()
- returns TABLE ("Idgroup_solution_methods" int4, "Idgroup_solution" int4, "Idtemplate_method" int4, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.group_solution_methods;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_methods_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_methods_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idgroup_solution_methods int4, idgroup_solution int4, idtemplate_method int4, status bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.group_solution_methods WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_methods_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_methods_DeleteByPrimaryKey
-(
-	p_idgroup_solution_methods int4
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.group_solution_methods
- WHERE 
-	idgroup_solution_methods = p_idgroup_solution_methods; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_methods_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_methods_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.group_solution_methods WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_Insert(int4,varchar,int4,int2,int4,int4,int4,int4,int4,bool,int2,timestamp,bool,bool,int4,timestamp,timestamp,bool,bool);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_Insert
-(
-	p_idgroup_solution int4 ,
-	p_cod_solution varchar(20) = null ,
-	p_idelement int4 = null ,
-	p_idmr_detail int2 = null ,
-	p_idreactive_medium int4 = null ,
-	p_idreactive_modif int4 = null ,
-	p_idtemplate_method int4 = null ,
-	p_type_solution int4 = null ,
-	p_type_pattern int4 = null ,
-	p_flag_selected_methods bool = null ,
-	p_user_sign_calib int2 = null ,
-	p_date_sign_calib timestamp = null ,
-	p_flag_sign_calib bool = null ,
-	p_flag_close_calib bool = null ,
-	p_idgroup_solution_previus int4 = null ,
-	p_date_ini timestamp = null ,
-	p_date_end timestamp = null ,
-	p_flag_sol_intermedia1 bool = null ,
-	p_flag_sol_intermedia2 bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.group_solution
-(
-	cod_solution,
-	idelement,
-	idmr_detail,
-	idreactive_medium,
-	idreactive_modif,
-	idtemplate_method,
-	type_solution,
-	type_pattern,
-	flag_selected_methods,
-	user_sign_calib,
-	date_sign_calib,
-	flag_sign_calib,
-	flag_close_calib,
-	idgroup_solution_previus,
-	date_ini,
-	date_end,
-	flag_sol_intermedia1,
-	flag_sol_intermedia2
-
-)
-VALUES
-(
-	p_cod_solution,
-	p_idelement,
-	p_idmr_detail,
-	p_idreactive_medium,
-	p_idreactive_modif,
-	p_idtemplate_method,
-	p_type_solution,
-	p_type_pattern,
-	p_flag_selected_methods,
-	p_user_sign_calib,
-	p_date_sign_calib,
-	p_flag_sign_calib,
-	p_flag_close_calib,
-	p_idgroup_solution_previus,
-	p_date_ini,
-	p_date_end,
-	p_flag_sol_intermedia1,
-	p_flag_sol_intermedia2
-
-)returning idgroup_solution into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_Update(int4,varchar,int4,int2,int4,int4,int4,int4,int4,bool,int2,timestamp,bool,bool,int4,timestamp,timestamp,bool,bool);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_Update
-(
-	p_idgroup_solution int4,
-	p_cod_solution varchar(20) = null,
-	p_idelement int4 = null,
-	p_idmr_detail int2 = null,
-	p_idreactive_medium int4 = null,
-	p_idreactive_modif int4 = null,
-	p_idtemplate_method int4 = null,
-	p_type_solution int4 = null,
-	p_type_pattern int4 = null,
-	p_flag_selected_methods bool = null,
-	p_user_sign_calib int2 = null,
-	p_date_sign_calib timestamp = null,
-	p_flag_sign_calib bool = null,
-	p_flag_close_calib bool = null,
-	p_idgroup_solution_previus int4 = null,
-	p_date_ini timestamp = null,
-	p_date_end timestamp = null,
-	p_flag_sol_intermedia1 bool = null,
-	p_flag_sol_intermedia2 bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.group_solution
-SET
-	cod_solution = p_cod_solution,
-	idelement = p_idelement,
-	idmr_detail = p_idmr_detail,
-	idreactive_medium = p_idreactive_medium,
-	idreactive_modif = p_idreactive_modif,
-	idtemplate_method = p_idtemplate_method,
-	type_solution = p_type_solution,
-	type_pattern = p_type_pattern,
-	flag_selected_methods = p_flag_selected_methods,
-	user_sign_calib = p_user_sign_calib,
-	date_sign_calib = p_date_sign_calib,
-	flag_sign_calib = p_flag_sign_calib,
-	flag_close_calib = p_flag_close_calib,
-	idgroup_solution_previus = p_idgroup_solution_previus,
-	date_ini = p_date_ini,
-	date_end = p_date_end,
-	flag_sol_intermedia1 = p_flag_sol_intermedia1,
-	flag_sol_intermedia2 = p_flag_sol_intermedia2
- WHERE 
-	idgroup_solution = p_idgroup_solution;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_SelectByPrimaryKey
-(
-	p_idgroup_solution int4
-) returns TABLE ("Idgroup_solution" int4, "Cod_solution" varchar, "Idelement" int4, "Idmr_detail" int2, "Idreactive_medium" int4, "Idreactive_modif" int4, "Idtemplate_method" int4, "Type_solution" int4, "Type_pattern" int4, "Flag_selected_methods" bool, "User_sign_calib" int2, "Date_sign_calib" timestamp, "Flag_sign_calib" bool, "Flag_close_calib" bool, "Idgroup_solution_previus" int4, "Date_ini" timestamp, "Date_end" timestamp, "Flag_sol_intermedia1" bool, "Flag_sol_intermedia2" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.group_solution
-	WHERE 
-			idgroup_solution = p_idgroup_solution;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_group_solution_SelectAll()
- returns TABLE ("Idgroup_solution" int4, "Cod_solution" varchar, "Idelement" int4, "Idmr_detail" int2, "Idreactive_medium" int4, "Idreactive_modif" int4, "Idtemplate_method" int4, "Type_solution" int4, "Type_pattern" int4, "Flag_selected_methods" bool, "User_sign_calib" int2, "Date_sign_calib" timestamp, "Flag_sign_calib" bool, "Flag_close_calib" bool, "Idgroup_solution_previus" int4, "Date_ini" timestamp, "Date_end" timestamp, "Flag_sol_intermedia1" bool, "Flag_sol_intermedia2" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.group_solution;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idgroup_solution int4, cod_solution varchar, idelement int4, idmr_detail int2, idreactive_medium int4, idreactive_modif int4, idtemplate_method int4, type_solution int4, type_pattern int4, flag_selected_methods bool, user_sign_calib int2, date_sign_calib timestamp, flag_sign_calib bool, flag_close_calib bool, idgroup_solution_previus int4, date_ini timestamp, date_end timestamp, flag_sol_intermedia1 bool, flag_sol_intermedia2 bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.group_solution WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_DeleteByPrimaryKey
-(
-	p_idgroup_solution int4
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.group_solution
- WHERE 
-	idgroup_solution = p_idgroup_solution; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_group_solution_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_group_solution_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.group_solution WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_solution_Insert(int4,int4,int4,int4,int4,varchar,int4,varchar,numeric,numeric,numeric,numeric,date,date,int4,int2,varchar,varchar,bool,int4,numeric,int4,numeric,varchar,int4,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_solution_Insert
-(
-	p_idsolution int4 ,
-	p_id int4 = null ,
-	p_parentid int4 = null ,
-	p_idgroup_solution int4 = null ,
-	p_idelement int4 = null ,
-	p_cod_solution varchar(20) = null ,
-	p_type_sol int4 = null ,
-	p_solution_name varchar(50) = null ,
-	p_purity numeric = null ,
-	p_concentration numeric = null ,
-	p_aliquot numeric = null ,
-	p_volumen numeric = null ,
-	p_date_begin date = null ,
-	p_date_end date = null ,
-	p_num_months int4 = null ,
-	p_prepared_by int2 = null ,
-	p_observation varchar(100) = null ,
-	p_lote varchar(12) = null ,
-	p_solution_status bool = null ,
-	p_idreactive_medium int4 = null ,
-	p_reactive_medium_value numeric = null ,
-	p_idreactive_modif int4 = null ,
-	p_reactive_modif_value numeric = null ,
-	p_concat_cod_methods varchar(100) = null ,
-	p_image_index int4 = null ,
-	p_usernew varchar(20) = null ,
-	p_datenew date = null ,
-	p_useredit varchar(20) = null ,
-	p_dateedit date = null ,
-	p_status bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.solution
-(
-	id,
-	parentid,
-	idgroup_solution,
-	idelement,
-	cod_solution,
-	type_sol,
-	solution_name,
-	purity,
-	concentration,
-	aliquot,
-	volumen,
-	date_begin,
-	date_end,
-	num_months,
-	prepared_by,
-	observation,
-	lote,
-	solution_status,
-	idreactive_medium,
-	reactive_medium_value,
-	idreactive_modif,
-	reactive_modif_value,
-	concat_cod_methods,
-	image_index,
-	usernew,
-	datenew,
-	useredit,
-	dateedit,
-	status
-
-)
-VALUES
-(
-	p_id,
-	p_parentid,
-	p_idgroup_solution,
-	p_idelement,
-	p_cod_solution,
-	p_type_sol,
-	p_solution_name,
-	p_purity,
-	p_concentration,
-	p_aliquot,
-	p_volumen,
-	p_date_begin,
-	p_date_end,
-	p_num_months,
-	p_prepared_by,
-	p_observation,
-	p_lote,
-	p_solution_status,
-	p_idreactive_medium,
-	p_reactive_medium_value,
-	p_idreactive_modif,
-	p_reactive_modif_value,
-	p_concat_cod_methods,
-	p_image_index,
-	p_usernew,
-	p_datenew,
-	p_useredit,
-	p_dateedit,
-	p_status
-
-)returning idsolution into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_solution_Update(int4,int4,int4,int4,int4,varchar,int4,varchar,numeric,numeric,numeric,numeric,date,date,int4,int2,varchar,varchar,bool,int4,numeric,int4,numeric,varchar,int4,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_solution_Update
-(
-	p_idsolution int4,
-	p_id int4 = null,
-	p_parentid int4 = null,
-	p_idgroup_solution int4 = null,
-	p_idelement int4 = null,
-	p_cod_solution varchar(20) = null,
-	p_type_sol int4 = null,
-	p_solution_name varchar(50) = null,
-	p_purity numeric = null,
-	p_concentration numeric = null,
-	p_aliquot numeric = null,
-	p_volumen numeric = null,
-	p_date_begin date = null,
-	p_date_end date = null,
-	p_num_months int4 = null,
-	p_prepared_by int2 = null,
-	p_observation varchar(100) = null,
-	p_lote varchar(12) = null,
-	p_solution_status bool = null,
-	p_idreactive_medium int4 = null,
-	p_reactive_medium_value numeric = null,
-	p_idreactive_modif int4 = null,
-	p_reactive_modif_value numeric = null,
-	p_concat_cod_methods varchar(100) = null,
-	p_image_index int4 = null,
-	p_usernew varchar(20) = null,
-	p_datenew date = null,
-	p_useredit varchar(20) = null,
-	p_dateedit date = null,
-	p_status bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.solution
-SET
-	id = p_id,
-	parentid = p_parentid,
-	idgroup_solution = p_idgroup_solution,
-	idelement = p_idelement,
-	cod_solution = p_cod_solution,
-	type_sol = p_type_sol,
-	solution_name = p_solution_name,
-	purity = p_purity,
-	concentration = p_concentration,
-	aliquot = p_aliquot,
-	volumen = p_volumen,
-	date_begin = p_date_begin,
-	date_end = p_date_end,
-	num_months = p_num_months,
-	prepared_by = p_prepared_by,
-	observation = p_observation,
-	lote = p_lote,
-	solution_status = p_solution_status,
-	idreactive_medium = p_idreactive_medium,
-	reactive_medium_value = p_reactive_medium_value,
-	idreactive_modif = p_idreactive_modif,
-	reactive_modif_value = p_reactive_modif_value,
-	concat_cod_methods = p_concat_cod_methods,
-	image_index = p_image_index,
-	usernew = p_usernew,
-	datenew = p_datenew,
-	useredit = p_useredit,
-	dateedit = p_dateedit,
-	status = p_status
- WHERE 
-	idsolution = p_idsolution;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_solution_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_solution_SelectByPrimaryKey
-(
-	p_idsolution int4
-) returns TABLE ("Idsolution" int4, "Id" int4, "Parentid" int4, "Idgroup_solution" int4, "Idelement" int4, "Cod_solution" varchar, "Type_sol" int4, "Solution_name" varchar, "Purity" numeric, "Concentration" numeric, "Aliquot" numeric, "Volumen" numeric, "Date_begin" date, "Date_end" date, "Num_months" int4, "Prepared_by" int2, "Observation" varchar, "Lote" varchar, "Solution_status" bool, "Idreactive_medium" int4, "Reactive_medium_value" numeric, "Idreactive_modif" int4, "Reactive_modif_value" numeric, "Concat_cod_methods" varchar, "Image_index" int4, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.solution
-	WHERE 
-			idsolution = p_idsolution;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_solution_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_solution_SelectAll()
- returns TABLE ("Idsolution" int4, "Id" int4, "Parentid" int4, "Idgroup_solution" int4, "Idelement" int4, "Cod_solution" varchar, "Type_sol" int4, "Solution_name" varchar, "Purity" numeric, "Concentration" numeric, "Aliquot" numeric, "Volumen" numeric, "Date_begin" date, "Date_end" date, "Num_months" int4, "Prepared_by" int2, "Observation" varchar, "Lote" varchar, "Solution_status" bool, "Idreactive_medium" int4, "Reactive_medium_value" numeric, "Idreactive_modif" int4, "Reactive_modif_value" numeric, "Concat_cod_methods" varchar, "Image_index" int4, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.solution;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_solution_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_solution_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idsolution int4, id int4, parentid int4, idgroup_solution int4, idelement int4, cod_solution varchar, type_sol int4, solution_name varchar, purity numeric, concentration numeric, aliquot numeric, volumen numeric, date_begin date, date_end date, num_months int4, prepared_by int2, observation varchar, lote varchar, solution_status bool, idreactive_medium int4, reactive_medium_value numeric, idreactive_modif int4, reactive_modif_value numeric, concat_cod_methods varchar, image_index int4, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.solution WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_solution_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_solution_DeleteByPrimaryKey
-(
-	p_idsolution int4
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.solution
- WHERE 
-	idsolution = p_idsolution; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_solution_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_solution_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.solution WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
 drop function if exists public.sp_price_version_detail_Insert(int4,int4,int4,int4,int4,varchar,numeric,numeric);
 CREATE OR REPLACE FUNCTION public.sp_price_version_detail_Insert
 (
@@ -13823,6 +12394,159 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+drop function if exists public.sp_calib_Insert(int8,int2,varchar,numeric,int4,numeric,numeric);
+CREATE OR REPLACE FUNCTION public.sp_calib_Insert
+(
+	p_idcalib int8 ,
+	p_order_calib int2 = null ,
+	p_name_calib varchar(15) = null ,
+	p_concentration numeric = null ,
+	p_idtemplate_method int4 = null ,
+	p_aliquot numeric = null ,
+	p_volumen numeric = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.calib
+(
+	order_calib,
+	name_calib,
+	concentration,
+	idtemplate_method,
+	aliquot,
+	volumen
+
+)
+VALUES
+(
+	p_order_calib,
+	p_name_calib,
+	p_concentration,
+	p_idtemplate_method,
+	p_aliquot,
+	p_volumen
+
+)returning idcalib into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_Update(int8,int2,varchar,numeric,int4,numeric,numeric);
+CREATE OR REPLACE FUNCTION public.sp_calib_Update
+(
+	p_idcalib int8,
+	p_order_calib int2 = null,
+	p_name_calib varchar(15) = null,
+	p_concentration numeric = null,
+	p_idtemplate_method int4 = null,
+	p_aliquot numeric = null,
+	p_volumen numeric = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.calib
+SET
+	order_calib = p_order_calib,
+	name_calib = p_name_calib,
+	concentration = p_concentration,
+	idtemplate_method = p_idtemplate_method,
+	aliquot = p_aliquot,
+	volumen = p_volumen
+ WHERE 
+	idcalib = p_idcalib;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_SelectByPrimaryKey(int8);
+CREATE OR REPLACE FUNCTION public.sp_calib_SelectByPrimaryKey
+(
+	p_idcalib int8
+) returns TABLE ("Idcalib" int8, "Order_calib" int2, "Name_calib" varchar, "Concentration" numeric, "Idtemplate_method" int4, "Aliquot" numeric, "Volumen" numeric
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.calib
+	WHERE 
+			idcalib = p_idcalib;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_calib_SelectAll()
+ returns TABLE ("Idcalib" int8, "Order_calib" int2, "Name_calib" varchar, "Concentration" numeric, "Idtemplate_method" int4, "Aliquot" numeric, "Volumen" numeric
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.calib;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_calib_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idcalib int8, order_calib int2, name_calib varchar, concentration numeric, idtemplate_method int4, aliquot numeric, volumen numeric
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.calib WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_DeleteByPrimaryKey(int8);
+CREATE OR REPLACE FUNCTION public.sp_calib_DeleteByPrimaryKey
+(
+	p_idcalib int8
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.calib
+ WHERE 
+	idcalib = p_idcalib; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_calib_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.calib WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
 drop function if exists public.sp_memo_price_Insert(int4,int4,varchar,int4);
 CREATE OR REPLACE FUNCTION public.sp_memo_price_Insert
 (
@@ -13954,169 +12678,6 @@ BEGIN
 
 
 	EXECUTE 'DELETE FROM public.memo_price WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_user_system_Insert(int2,varchar,varchar,int2,varchar,timestamp,varchar,timestamp,bool);
-CREATE OR REPLACE FUNCTION public.sp_user_system_Insert
-(
-	p_iduser int2 ,
-	p_cod_user varchar(30) ,
-	p_pwd varchar(32) ,
-	p_idperson int2 = null ,
-	p_usernew varchar(50) = null ,
-	p_datenew timestamp = null ,
-	p_useredit varchar(50) = null ,
-	p_dateedit timestamp = null ,
-	p_status bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.user_system
-(
-	cod_user,
-	pwd,
-	idperson,
-	usernew,
-	datenew,
-	useredit,
-	dateedit,
-	status
-
-)
-VALUES
-(
-	p_cod_user,
-	p_pwd,
-	p_idperson,
-	p_usernew,
-	p_datenew,
-	p_useredit,
-	p_dateedit,
-	p_status
-
-)returning iduser into result;
-	return result;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_user_system_Update(int2,varchar,varchar,int2,varchar,timestamp,varchar,timestamp,bool);
-CREATE OR REPLACE FUNCTION public.sp_user_system_Update
-(
-	p_iduser int2,
-	p_cod_user varchar(30),
-	p_pwd varchar(32),
-	p_idperson int2 = null,
-	p_usernew varchar(50) = null,
-	p_datenew timestamp = null,
-	p_useredit varchar(50) = null,
-	p_dateedit timestamp = null,
-	p_status bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.user_system
-SET
-	cod_user = p_cod_user,
-	pwd = p_pwd,
-	idperson = p_idperson,
-	usernew = p_usernew,
-	datenew = p_datenew,
-	useredit = p_useredit,
-	dateedit = p_dateedit,
-	status = p_status
- WHERE 
-	iduser = p_iduser;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_user_system_SelectByPrimaryKey(int2);
-CREATE OR REPLACE FUNCTION public.sp_user_system_SelectByPrimaryKey
-(
-	p_iduser int2
-) returns TABLE ("Iduser" int2, "Cod_user" varchar, "Pwd" varchar, "Idperson" int2, "Usernew" varchar, "Datenew" timestamp, "Useredit" varchar, "Dateedit" timestamp, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.user_system
-	WHERE 
-			iduser = p_iduser;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_user_system_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_user_system_SelectAll()
- returns TABLE ("Iduser" int2, "Cod_user" varchar, "Pwd" varchar, "Idperson" int2, "Usernew" varchar, "Datenew" timestamp, "Useredit" varchar, "Dateedit" timestamp, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.user_system;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_user_system_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_user_system_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (iduser int2, cod_user varchar, pwd varchar, idperson int2, usernew varchar, datenew timestamp, useredit varchar, dateedit timestamp, status bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.user_system WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_user_system_DeleteByPrimaryKey(int2);
-CREATE OR REPLACE FUNCTION public.sp_user_system_DeleteByPrimaryKey
-(
-	p_iduser int2
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.user_system
- WHERE 
-	iduser = p_iduser; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_user_system_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_user_system_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.user_system WHERE ' || FieldName  ||' = '|| Value 
 	USING Value;
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
@@ -15403,298 +13964,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-drop function if exists public.sp_template_method_gr_Insert(int4,numeric,numeric,numeric,numeric,numeric,numeric,varchar,numeric,numeric,int2,bool,int2,numeric,numeric,numeric,bool,numeric,numeric,numeric,bool,numeric,numeric,numeric,date,int2,int2,int2,int2,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_template_method_gr_Insert
-(
-	p_idtemplate_method int4 ,
-	p_weight numeric = null ,
-	p_weight_incertitude numeric = null ,
-	p_reading_min numeric = null ,
-	p_reading_max numeric = null ,
-	p_reason_rep numeric = null ,
-	p_error_allowed numeric = null ,
-	p_symbol varchar(10) = null ,
-	p_law_limit_bottom numeric = null ,
-	p_law_limit_top numeric = null ,
-	p_num_decimal int2 = null ,
-	p_flag_mr bool = null ,
-	p_idmr_detail int2 = null ,
-	p_mr_incertitude numeric = null ,
-	p_blk_max numeric = null ,
-	p_reproducibility numeric = null ,
-	p_flagsamfortify bool = null ,
-	p_samfortisol numeric = null ,
-	p_samfortialiquot numeric = null ,
-	p_samfortireproducibility numeric = null ,
-	p_flagblkfortify bool = null ,
-	p_blkfortisol numeric = null ,
-	p_blkfortialiquot numeric = null ,
-	p_blkfortireproducibility numeric = null ,
-	p_date_allowed_error date = null ,
-	p_idunit_result int2 = null ,
-	p_num_samples int2 = null ,
-	p_num_days int2 = null ,
-	p_limit_samples int2 = null ,
-	p_usernew varchar(20) = null ,
-	p_datenew date = null ,
-	p_useredit varchar(20) = null ,
-	p_dateedit date = null ,
-	p_status bool = null 
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-INSERT INTO public.template_method_gr
-(
-	idtemplate_method,
-	weight,
-	weight_incertitude,
-	reading_min,
-	reading_max,
-	reason_rep,
-	error_allowed,
-	symbol,
-	law_limit_bottom,
-	law_limit_top,
-	num_decimal,
-	flag_mr,
-	idmr_detail,
-	mr_incertitude,
-	blk_max,
-	reproducibility,
-	flagsamfortify,
-	samfortisol,
-	samfortialiquot,
-	samfortireproducibility,
-	flagblkfortify,
-	blkfortisol,
-	blkfortialiquot,
-	blkfortireproducibility,
-	date_allowed_error,
-	idunit_result,
-	num_samples,
-	num_days,
-	limit_samples,
-	usernew,
-	datenew,
-	useredit,
-	dateedit,
-	status
-
-)
-VALUES
-(
-	p_idtemplate_method,
-	p_weight,
-	p_weight_incertitude,
-	p_reading_min,
-	p_reading_max,
-	p_reason_rep,
-	p_error_allowed,
-	p_symbol,
-	p_law_limit_bottom,
-	p_law_limit_top,
-	p_num_decimal,
-	p_flag_mr,
-	p_idmr_detail,
-	p_mr_incertitude,
-	p_blk_max,
-	p_reproducibility,
-	p_flagsamfortify,
-	p_samfortisol,
-	p_samfortialiquot,
-	p_samfortireproducibility,
-	p_flagblkfortify,
-	p_blkfortisol,
-	p_blkfortialiquot,
-	p_blkfortireproducibility,
-	p_date_allowed_error,
-	p_idunit_result,
-	p_num_samples,
-	p_num_days,
-	p_limit_samples,
-	p_usernew,
-	p_datenew,
-	p_useredit,
-	p_dateedit,
-	p_status
-
-);
-get diagnostics result = ROW_COUNT;return result;
-
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_gr_Update(int4,numeric,numeric,numeric,numeric,numeric,numeric,varchar,numeric,numeric,int2,bool,int2,numeric,numeric,numeric,bool,numeric,numeric,numeric,bool,numeric,numeric,numeric,date,int2,int2,int2,int2,varchar,date,varchar,date,bool);
-CREATE OR REPLACE FUNCTION public.sp_template_method_gr_Update
-(
-	p_idtemplate_method int4,
-	p_weight numeric = null,
-	p_weight_incertitude numeric = null,
-	p_reading_min numeric = null,
-	p_reading_max numeric = null,
-	p_reason_rep numeric = null,
-	p_error_allowed numeric = null,
-	p_symbol varchar(10) = null,
-	p_law_limit_bottom numeric = null,
-	p_law_limit_top numeric = null,
-	p_num_decimal int2 = null,
-	p_flag_mr bool = null,
-	p_idmr_detail int2 = null,
-	p_mr_incertitude numeric = null,
-	p_blk_max numeric = null,
-	p_reproducibility numeric = null,
-	p_flagsamfortify bool = null,
-	p_samfortisol numeric = null,
-	p_samfortialiquot numeric = null,
-	p_samfortireproducibility numeric = null,
-	p_flagblkfortify bool = null,
-	p_blkfortisol numeric = null,
-	p_blkfortialiquot numeric = null,
-	p_blkfortireproducibility numeric = null,
-	p_date_allowed_error date = null,
-	p_idunit_result int2 = null,
-	p_num_samples int2 = null,
-	p_num_days int2 = null,
-	p_limit_samples int2 = null,
-	p_usernew varchar(20) = null,
-	p_datenew date = null,
-	p_useredit varchar(20) = null,
-	p_dateedit date = null,
-	p_status bool = null
-
-)returns int8 AS $$
-Declare result int8;
-BEGIN
-
-UPDATE public.template_method_gr
-SET
-	idtemplate_method = p_idtemplate_method,
-	weight = p_weight,
-	weight_incertitude = p_weight_incertitude,
-	reading_min = p_reading_min,
-	reading_max = p_reading_max,
-	reason_rep = p_reason_rep,
-	error_allowed = p_error_allowed,
-	symbol = p_symbol,
-	law_limit_bottom = p_law_limit_bottom,
-	law_limit_top = p_law_limit_top,
-	num_decimal = p_num_decimal,
-	flag_mr = p_flag_mr,
-	idmr_detail = p_idmr_detail,
-	mr_incertitude = p_mr_incertitude,
-	blk_max = p_blk_max,
-	reproducibility = p_reproducibility,
-	flagsamfortify = p_flagsamfortify,
-	samfortisol = p_samfortisol,
-	samfortialiquot = p_samfortialiquot,
-	samfortireproducibility = p_samfortireproducibility,
-	flagblkfortify = p_flagblkfortify,
-	blkfortisol = p_blkfortisol,
-	blkfortialiquot = p_blkfortialiquot,
-	blkfortireproducibility = p_blkfortireproducibility,
-	date_allowed_error = p_date_allowed_error,
-	idunit_result = p_idunit_result,
-	num_samples = p_num_samples,
-	num_days = p_num_days,
-	limit_samples = p_limit_samples,
-	usernew = p_usernew,
-	datenew = p_datenew,
-	useredit = p_useredit,
-	dateedit = p_dateedit,
-	status = p_status
- WHERE 
-	idtemplate_method = p_idtemplate_method;
-	get diagnostics result = ROW_COUNT;
-	return result;
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_gr_SelectByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_template_method_gr_SelectByPrimaryKey
-(
-	p_idtemplate_method int4
-) returns TABLE ("Idtemplate_method" int4, "Weight" numeric, "Weight_incertitude" numeric, "Reading_min" numeric, "Reading_max" numeric, "Reason_rep" numeric, "Error_allowed" numeric, "Symbol" varchar, "Law_limit_bottom" numeric, "Law_limit_top" numeric, "Num_decimal" int2, "Flag_mr" bool, "Idmr_detail" int2, "Mr_incertitude" numeric, "Blk_max" numeric, "Reproducibility" numeric, "Flagsamfortify" bool, "Samfortisol" numeric, "Samfortialiquot" numeric, "Samfortireproducibility" numeric, "Flagblkfortify" bool, "Blkfortisol" numeric, "Blkfortialiquot" numeric, "Blkfortireproducibility" numeric, "Date_allowed_error" date, "Idunit_result" int2, "Num_samples" int2, "Num_days" int2, "Limit_samples" int2, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.template_method_gr
-	WHERE 
-			idtemplate_method = p_idtemplate_method;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_gr_SelectAll();
-CREATE OR REPLACE FUNCTION public.sp_template_method_gr_SelectAll()
- returns TABLE ("Idtemplate_method" int4, "Weight" numeric, "Weight_incertitude" numeric, "Reading_min" numeric, "Reading_max" numeric, "Reason_rep" numeric, "Error_allowed" numeric, "Symbol" varchar, "Law_limit_bottom" numeric, "Law_limit_top" numeric, "Num_decimal" int2, "Flag_mr" bool, "Idmr_detail" int2, "Mr_incertitude" numeric, "Blk_max" numeric, "Reproducibility" numeric, "Flagsamfortify" bool, "Samfortisol" numeric, "Samfortialiquot" numeric, "Samfortireproducibility" numeric, "Flagblkfortify" bool, "Blkfortisol" numeric, "Blkfortialiquot" numeric, "Blkfortireproducibility" numeric, "Date_allowed_error" date, "Idunit_result" int2, "Num_samples" int2, "Num_days" int2, "Limit_samples" int2, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
-)AS $$
-BEGIN
-
-	return query
-	SELECT *
-	FROM public.template_method_gr;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_gr_SelectByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_template_method_gr_SelectByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
- returns TABLE (idtemplate_method int4, weight numeric, weight_incertitude numeric, reading_min numeric, reading_max numeric, reason_rep numeric, error_allowed numeric, symbol varchar, law_limit_bottom numeric, law_limit_top numeric, num_decimal int2, flag_mr bool, idmr_detail int2, mr_incertitude numeric, blk_max numeric, reproducibility numeric, flagsamfortify bool, samfortisol numeric, samfortialiquot numeric, samfortireproducibility numeric, flagblkfortify bool, blkfortisol numeric, blkfortialiquot numeric, blkfortireproducibility numeric, date_allowed_error date, idunit_result int2, num_samples int2, num_days int2, limit_samples int2, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
-)AS $$
-BEGIN
-
-
-	return query EXECUTE 'SELECT * FROM public.template_method_gr WHERE '|| FieldName ||' = '|| Value 
-	USING Value;
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_gr_DeleteByPrimaryKey(int4);
-CREATE OR REPLACE FUNCTION public.sp_template_method_gr_DeleteByPrimaryKey
-(
-	p_idtemplate_method int4
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-DELETE FROM public.template_method_gr
- WHERE 
-	idtemplate_method = p_idtemplate_method; 
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
-drop function if exists public.sp_template_method_gr_DeleteByField(varchar,varchar);
-CREATE OR REPLACE FUNCTION public.sp_template_method_gr_DeleteByField
-(
-	FieldName varchar(100),
-	Value varchar(1000)
-)
-returns int4 AS $$
-declare result int;
-BEGIN
-
-
-	EXECUTE 'DELETE FROM public.template_method_gr WHERE ' || FieldName  ||' = '|| Value 
-	USING Value;
-	get diagnostics result = ROW_COUNT;
-	RETURN  result;	
-
-END;
-$$ LANGUAGE plpgsql;
-
 drop function if exists public.sp_element_wavelength_Insert(int4,int2,varchar,varchar,numeric,numeric,numeric,numeric,varchar,timestamp,varchar,timestamp,bool);
 CREATE OR REPLACE FUNCTION public.sp_element_wavelength_Insert
 (
@@ -16420,6 +14689,2261 @@ BEGIN
 
 
 	EXECUTE 'DELETE FROM public.factor_estequiometrico WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_gr_Insert(int4,numeric,numeric,numeric,numeric,numeric,numeric,varchar,numeric,numeric,int2,bool,int2,numeric,numeric,numeric,bool,numeric,numeric,numeric,bool,numeric,numeric,numeric,date,int2,int2,int2,int2,int4,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_template_method_gr_Insert
+(
+	p_idtemplate_method int4 ,
+	p_weight numeric = null ,
+	p_weight_incertitude numeric = null ,
+	p_reading_min numeric = null ,
+	p_reading_max numeric = null ,
+	p_reason_rep numeric = null ,
+	p_error_allowed numeric = null ,
+	p_symbol varchar(10) = null ,
+	p_law_limit_bottom numeric = null ,
+	p_law_limit_top numeric = null ,
+	p_num_decimal int2 = null ,
+	p_flag_mr bool = null ,
+	p_idmr_detail int2 = null ,
+	p_mr_incertitude numeric = null ,
+	p_blk_max numeric = null ,
+	p_reproducibility numeric = null ,
+	p_flagsamfortify bool = null ,
+	p_samfortisol numeric = null ,
+	p_samfortialiquot numeric = null ,
+	p_samfortireproducibility numeric = null ,
+	p_flagblkfortify bool = null ,
+	p_blkfortisol numeric = null ,
+	p_blkfortialiquot numeric = null ,
+	p_blkfortireproducibility numeric = null ,
+	p_date_allowed_error date = null ,
+	p_idunit_result int2 = null ,
+	p_num_samples int2 = null ,
+	p_num_days int2 = null ,
+	p_limit_samples int2 = null ,
+	p_idfactor_estequiometrico int4 = null ,
+	p_usernew varchar(20) = null ,
+	p_datenew date = null ,
+	p_useredit varchar(20) = null ,
+	p_dateedit date = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.template_method_gr
+(
+	idtemplate_method,
+	weight,
+	weight_incertitude,
+	reading_min,
+	reading_max,
+	reason_rep,
+	error_allowed,
+	symbol,
+	law_limit_bottom,
+	law_limit_top,
+	num_decimal,
+	flag_mr,
+	idmr_detail,
+	mr_incertitude,
+	blk_max,
+	reproducibility,
+	flagsamfortify,
+	samfortisol,
+	samfortialiquot,
+	samfortireproducibility,
+	flagblkfortify,
+	blkfortisol,
+	blkfortialiquot,
+	blkfortireproducibility,
+	date_allowed_error,
+	idunit_result,
+	num_samples,
+	num_days,
+	limit_samples,
+	idfactor_estequiometrico,
+	usernew,
+	datenew,
+	useredit,
+	dateedit,
+	status
+
+)
+VALUES
+(
+	p_idtemplate_method,
+	p_weight,
+	p_weight_incertitude,
+	p_reading_min,
+	p_reading_max,
+	p_reason_rep,
+	p_error_allowed,
+	p_symbol,
+	p_law_limit_bottom,
+	p_law_limit_top,
+	p_num_decimal,
+	p_flag_mr,
+	p_idmr_detail,
+	p_mr_incertitude,
+	p_blk_max,
+	p_reproducibility,
+	p_flagsamfortify,
+	p_samfortisol,
+	p_samfortialiquot,
+	p_samfortireproducibility,
+	p_flagblkfortify,
+	p_blkfortisol,
+	p_blkfortialiquot,
+	p_blkfortireproducibility,
+	p_date_allowed_error,
+	p_idunit_result,
+	p_num_samples,
+	p_num_days,
+	p_limit_samples,
+	p_idfactor_estequiometrico,
+	p_usernew,
+	p_datenew,
+	p_useredit,
+	p_dateedit,
+	p_status
+
+);
+get diagnostics result = ROW_COUNT;return result;
+
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_gr_Update(int4,numeric,numeric,numeric,numeric,numeric,numeric,varchar,numeric,numeric,int2,bool,int2,numeric,numeric,numeric,bool,numeric,numeric,numeric,bool,numeric,numeric,numeric,date,int2,int2,int2,int2,int4,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_template_method_gr_Update
+(
+	p_idtemplate_method int4,
+	p_weight numeric = null,
+	p_weight_incertitude numeric = null,
+	p_reading_min numeric = null,
+	p_reading_max numeric = null,
+	p_reason_rep numeric = null,
+	p_error_allowed numeric = null,
+	p_symbol varchar(10) = null,
+	p_law_limit_bottom numeric = null,
+	p_law_limit_top numeric = null,
+	p_num_decimal int2 = null,
+	p_flag_mr bool = null,
+	p_idmr_detail int2 = null,
+	p_mr_incertitude numeric = null,
+	p_blk_max numeric = null,
+	p_reproducibility numeric = null,
+	p_flagsamfortify bool = null,
+	p_samfortisol numeric = null,
+	p_samfortialiquot numeric = null,
+	p_samfortireproducibility numeric = null,
+	p_flagblkfortify bool = null,
+	p_blkfortisol numeric = null,
+	p_blkfortialiquot numeric = null,
+	p_blkfortireproducibility numeric = null,
+	p_date_allowed_error date = null,
+	p_idunit_result int2 = null,
+	p_num_samples int2 = null,
+	p_num_days int2 = null,
+	p_limit_samples int2 = null,
+	p_idfactor_estequiometrico int4 = null,
+	p_usernew varchar(20) = null,
+	p_datenew date = null,
+	p_useredit varchar(20) = null,
+	p_dateedit date = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.template_method_gr
+SET
+	idtemplate_method = p_idtemplate_method,
+	weight = p_weight,
+	weight_incertitude = p_weight_incertitude,
+	reading_min = p_reading_min,
+	reading_max = p_reading_max,
+	reason_rep = p_reason_rep,
+	error_allowed = p_error_allowed,
+	symbol = p_symbol,
+	law_limit_bottom = p_law_limit_bottom,
+	law_limit_top = p_law_limit_top,
+	num_decimal = p_num_decimal,
+	flag_mr = p_flag_mr,
+	idmr_detail = p_idmr_detail,
+	mr_incertitude = p_mr_incertitude,
+	blk_max = p_blk_max,
+	reproducibility = p_reproducibility,
+	flagsamfortify = p_flagsamfortify,
+	samfortisol = p_samfortisol,
+	samfortialiquot = p_samfortialiquot,
+	samfortireproducibility = p_samfortireproducibility,
+	flagblkfortify = p_flagblkfortify,
+	blkfortisol = p_blkfortisol,
+	blkfortialiquot = p_blkfortialiquot,
+	blkfortireproducibility = p_blkfortireproducibility,
+	date_allowed_error = p_date_allowed_error,
+	idunit_result = p_idunit_result,
+	num_samples = p_num_samples,
+	num_days = p_num_days,
+	limit_samples = p_limit_samples,
+	idfactor_estequiometrico = p_idfactor_estequiometrico,
+	usernew = p_usernew,
+	datenew = p_datenew,
+	useredit = p_useredit,
+	dateedit = p_dateedit,
+	status = p_status
+ WHERE 
+	idtemplate_method = p_idtemplate_method;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_gr_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_template_method_gr_SelectByPrimaryKey
+(
+	p_idtemplate_method int4
+) returns TABLE ("Idtemplate_method" int4, "Weight" numeric, "Weight_incertitude" numeric, "Reading_min" numeric, "Reading_max" numeric, "Reason_rep" numeric, "Error_allowed" numeric, "Symbol" varchar, "Law_limit_bottom" numeric, "Law_limit_top" numeric, "Num_decimal" int2, "Flag_mr" bool, "Idmr_detail" int2, "Mr_incertitude" numeric, "Blk_max" numeric, "Reproducibility" numeric, "Flagsamfortify" bool, "Samfortisol" numeric, "Samfortialiquot" numeric, "Samfortireproducibility" numeric, "Flagblkfortify" bool, "Blkfortisol" numeric, "Blkfortialiquot" numeric, "Blkfortireproducibility" numeric, "Date_allowed_error" date, "Idunit_result" int2, "Num_samples" int2, "Num_days" int2, "Limit_samples" int2, "Idfactor_estequiometrico" int4, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.template_method_gr
+	WHERE 
+			idtemplate_method = p_idtemplate_method;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_gr_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_template_method_gr_SelectAll()
+ returns TABLE ("Idtemplate_method" int4, "Weight" numeric, "Weight_incertitude" numeric, "Reading_min" numeric, "Reading_max" numeric, "Reason_rep" numeric, "Error_allowed" numeric, "Symbol" varchar, "Law_limit_bottom" numeric, "Law_limit_top" numeric, "Num_decimal" int2, "Flag_mr" bool, "Idmr_detail" int2, "Mr_incertitude" numeric, "Blk_max" numeric, "Reproducibility" numeric, "Flagsamfortify" bool, "Samfortisol" numeric, "Samfortialiquot" numeric, "Samfortireproducibility" numeric, "Flagblkfortify" bool, "Blkfortisol" numeric, "Blkfortialiquot" numeric, "Blkfortireproducibility" numeric, "Date_allowed_error" date, "Idunit_result" int2, "Num_samples" int2, "Num_days" int2, "Limit_samples" int2, "Idfactor_estequiometrico" int4, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.template_method_gr;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_gr_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_template_method_gr_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idtemplate_method int4, weight numeric, weight_incertitude numeric, reading_min numeric, reading_max numeric, reason_rep numeric, error_allowed numeric, symbol varchar, law_limit_bottom numeric, law_limit_top numeric, num_decimal int2, flag_mr bool, idmr_detail int2, mr_incertitude numeric, blk_max numeric, reproducibility numeric, flagsamfortify bool, samfortisol numeric, samfortialiquot numeric, samfortireproducibility numeric, flagblkfortify bool, blkfortisol numeric, blkfortialiquot numeric, blkfortireproducibility numeric, date_allowed_error date, idunit_result int2, num_samples int2, num_days int2, limit_samples int2, idfactor_estequiometrico int4, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.template_method_gr WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_gr_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_template_method_gr_DeleteByPrimaryKey
+(
+	p_idtemplate_method int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.template_method_gr
+ WHERE 
+	idtemplate_method = p_idtemplate_method; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_gr_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_template_method_gr_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.template_method_gr WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_vc_Insert(int4,numeric,numeric,numeric,numeric,numeric,numeric,varchar,numeric,numeric,int2,bool,int2,numeric,numeric,numeric,bool,numeric,numeric,numeric,bool,numeric,numeric,numeric,date,int2,int2,int2,int2,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_template_method_vc_Insert
+(
+	p_idtemplate_method int4 ,
+	p_weight numeric = null ,
+	p_weight_incertitude numeric = null ,
+	p_reading_min numeric = null ,
+	p_reading_max numeric = null ,
+	p_reason_rep numeric = null ,
+	p_error_allowed numeric = null ,
+	p_symbol varchar(10) = null ,
+	p_law_limit_bottom numeric = null ,
+	p_law_limit_top numeric = null ,
+	p_num_decimal int2 = null ,
+	p_flag_mr bool = null ,
+	p_idmr_detail int2 = null ,
+	p_mr_incertitude numeric = null ,
+	p_blk_max numeric = null ,
+	p_reproducibility numeric = null ,
+	p_flagsamfortify bool = null ,
+	p_samfortisol numeric = null ,
+	p_samfortialiquot numeric = null ,
+	p_samfortireproducibility numeric = null ,
+	p_flagblkfortify bool = null ,
+	p_blkfortisol numeric = null ,
+	p_blkfortialiquot numeric = null ,
+	p_blkfortireproducibility numeric = null ,
+	p_date_allowed_error date = null ,
+	p_idunit_result int2 = null ,
+	p_num_samples int2 = null ,
+	p_num_days int2 = null ,
+	p_limit_samples int2 = null ,
+	p_usernew varchar(20) = null ,
+	p_datenew date = null ,
+	p_useredit varchar(20) = null ,
+	p_dateedit date = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.template_method_vc
+(
+	idtemplate_method,
+	weight,
+	weight_incertitude,
+	reading_min,
+	reading_max,
+	reason_rep,
+	error_allowed,
+	symbol,
+	law_limit_bottom,
+	law_limit_top,
+	num_decimal,
+	flag_mr,
+	idmr_detail,
+	mr_incertitude,
+	blk_max,
+	reproducibility,
+	flagsamfortify,
+	samfortisol,
+	samfortialiquot,
+	samfortireproducibility,
+	flagblkfortify,
+	blkfortisol,
+	blkfortialiquot,
+	blkfortireproducibility,
+	date_allowed_error,
+	idunit_result,
+	num_samples,
+	num_days,
+	limit_samples,
+	usernew,
+	datenew,
+	useredit,
+	dateedit,
+	status
+
+)
+VALUES
+(
+	p_idtemplate_method,
+	p_weight,
+	p_weight_incertitude,
+	p_reading_min,
+	p_reading_max,
+	p_reason_rep,
+	p_error_allowed,
+	p_symbol,
+	p_law_limit_bottom,
+	p_law_limit_top,
+	p_num_decimal,
+	p_flag_mr,
+	p_idmr_detail,
+	p_mr_incertitude,
+	p_blk_max,
+	p_reproducibility,
+	p_flagsamfortify,
+	p_samfortisol,
+	p_samfortialiquot,
+	p_samfortireproducibility,
+	p_flagblkfortify,
+	p_blkfortisol,
+	p_blkfortialiquot,
+	p_blkfortireproducibility,
+	p_date_allowed_error,
+	p_idunit_result,
+	p_num_samples,
+	p_num_days,
+	p_limit_samples,
+	p_usernew,
+	p_datenew,
+	p_useredit,
+	p_dateedit,
+	p_status
+
+);
+get diagnostics result = ROW_COUNT;return result;
+
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_vc_Update(int4,numeric,numeric,numeric,numeric,numeric,numeric,varchar,numeric,numeric,int2,bool,int2,numeric,numeric,numeric,bool,numeric,numeric,numeric,bool,numeric,numeric,numeric,date,int2,int2,int2,int2,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_template_method_vc_Update
+(
+	p_idtemplate_method int4,
+	p_weight numeric = null,
+	p_weight_incertitude numeric = null,
+	p_reading_min numeric = null,
+	p_reading_max numeric = null,
+	p_reason_rep numeric = null,
+	p_error_allowed numeric = null,
+	p_symbol varchar(10) = null,
+	p_law_limit_bottom numeric = null,
+	p_law_limit_top numeric = null,
+	p_num_decimal int2 = null,
+	p_flag_mr bool = null,
+	p_idmr_detail int2 = null,
+	p_mr_incertitude numeric = null,
+	p_blk_max numeric = null,
+	p_reproducibility numeric = null,
+	p_flagsamfortify bool = null,
+	p_samfortisol numeric = null,
+	p_samfortialiquot numeric = null,
+	p_samfortireproducibility numeric = null,
+	p_flagblkfortify bool = null,
+	p_blkfortisol numeric = null,
+	p_blkfortialiquot numeric = null,
+	p_blkfortireproducibility numeric = null,
+	p_date_allowed_error date = null,
+	p_idunit_result int2 = null,
+	p_num_samples int2 = null,
+	p_num_days int2 = null,
+	p_limit_samples int2 = null,
+	p_usernew varchar(20) = null,
+	p_datenew date = null,
+	p_useredit varchar(20) = null,
+	p_dateedit date = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.template_method_vc
+SET
+	idtemplate_method = p_idtemplate_method,
+	weight = p_weight,
+	weight_incertitude = p_weight_incertitude,
+	reading_min = p_reading_min,
+	reading_max = p_reading_max,
+	reason_rep = p_reason_rep,
+	error_allowed = p_error_allowed,
+	symbol = p_symbol,
+	law_limit_bottom = p_law_limit_bottom,
+	law_limit_top = p_law_limit_top,
+	num_decimal = p_num_decimal,
+	flag_mr = p_flag_mr,
+	idmr_detail = p_idmr_detail,
+	mr_incertitude = p_mr_incertitude,
+	blk_max = p_blk_max,
+	reproducibility = p_reproducibility,
+	flagsamfortify = p_flagsamfortify,
+	samfortisol = p_samfortisol,
+	samfortialiquot = p_samfortialiquot,
+	samfortireproducibility = p_samfortireproducibility,
+	flagblkfortify = p_flagblkfortify,
+	blkfortisol = p_blkfortisol,
+	blkfortialiquot = p_blkfortialiquot,
+	blkfortireproducibility = p_blkfortireproducibility,
+	date_allowed_error = p_date_allowed_error,
+	idunit_result = p_idunit_result,
+	num_samples = p_num_samples,
+	num_days = p_num_days,
+	limit_samples = p_limit_samples,
+	usernew = p_usernew,
+	datenew = p_datenew,
+	useredit = p_useredit,
+	dateedit = p_dateedit,
+	status = p_status
+ WHERE 
+	idtemplate_method = p_idtemplate_method;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_vc_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_template_method_vc_SelectByPrimaryKey
+(
+	p_idtemplate_method int4
+) returns TABLE ("Idtemplate_method" int4, "Weight" numeric, "Weight_incertitude" numeric, "Reading_min" numeric, "Reading_max" numeric, "Reason_rep" numeric, "Error_allowed" numeric, "Symbol" varchar, "Law_limit_bottom" numeric, "Law_limit_top" numeric, "Num_decimal" int2, "Flag_mr" bool, "Idmr_detail" int2, "Mr_incertitude" numeric, "Blk_max" numeric, "Reproducibility" numeric, "Flagsamfortify" bool, "Samfortisol" numeric, "Samfortialiquot" numeric, "Samfortireproducibility" numeric, "Flagblkfortify" bool, "Blkfortisol" numeric, "Blkfortialiquot" numeric, "Blkfortireproducibility" numeric, "Date_allowed_error" date, "Idunit_result" int2, "Num_samples" int2, "Num_days" int2, "Limit_samples" int2, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.template_method_vc
+	WHERE 
+			idtemplate_method = p_idtemplate_method;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_vc_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_template_method_vc_SelectAll()
+ returns TABLE ("Idtemplate_method" int4, "Weight" numeric, "Weight_incertitude" numeric, "Reading_min" numeric, "Reading_max" numeric, "Reason_rep" numeric, "Error_allowed" numeric, "Symbol" varchar, "Law_limit_bottom" numeric, "Law_limit_top" numeric, "Num_decimal" int2, "Flag_mr" bool, "Idmr_detail" int2, "Mr_incertitude" numeric, "Blk_max" numeric, "Reproducibility" numeric, "Flagsamfortify" bool, "Samfortisol" numeric, "Samfortialiquot" numeric, "Samfortireproducibility" numeric, "Flagblkfortify" bool, "Blkfortisol" numeric, "Blkfortialiquot" numeric, "Blkfortireproducibility" numeric, "Date_allowed_error" date, "Idunit_result" int2, "Num_samples" int2, "Num_days" int2, "Limit_samples" int2, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.template_method_vc;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_vc_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_template_method_vc_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idtemplate_method int4, weight numeric, weight_incertitude numeric, reading_min numeric, reading_max numeric, reason_rep numeric, error_allowed numeric, symbol varchar, law_limit_bottom numeric, law_limit_top numeric, num_decimal int2, flag_mr bool, idmr_detail int2, mr_incertitude numeric, blk_max numeric, reproducibility numeric, flagsamfortify bool, samfortisol numeric, samfortialiquot numeric, samfortireproducibility numeric, flagblkfortify bool, blkfortisol numeric, blkfortialiquot numeric, blkfortireproducibility numeric, date_allowed_error date, idunit_result int2, num_samples int2, num_days int2, limit_samples int2, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.template_method_vc WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_vc_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_template_method_vc_DeleteByPrimaryKey
+(
+	p_idtemplate_method int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.template_method_vc
+ WHERE 
+	idtemplate_method = p_idtemplate_method; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_vc_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_template_method_vc_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.template_method_vc WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_methods_Insert(int4,int4,int4,bool);
+CREATE OR REPLACE FUNCTION public.sp_solution_methods_Insert
+(
+	p_idsolution_methods int4 ,
+	p_idsolution int4 = null ,
+	p_idtemplate_method int4 = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.solution_methods
+(
+	idsolution,
+	idtemplate_method,
+	status
+
+)
+VALUES
+(
+	p_idsolution,
+	p_idtemplate_method,
+	p_status
+
+)returning idsolution_methods into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_methods_Update(int4,int4,int4,bool);
+CREATE OR REPLACE FUNCTION public.sp_solution_methods_Update
+(
+	p_idsolution_methods int4,
+	p_idsolution int4 = null,
+	p_idtemplate_method int4 = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.solution_methods
+SET
+	idsolution = p_idsolution,
+	idtemplate_method = p_idtemplate_method,
+	status = p_status
+ WHERE 
+	idsolution_methods = p_idsolution_methods;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_methods_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_solution_methods_SelectByPrimaryKey
+(
+	p_idsolution_methods int4
+) returns TABLE ("Idsolution_methods" int4, "Idsolution" int4, "Idtemplate_method" int4, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.solution_methods
+	WHERE 
+			idsolution_methods = p_idsolution_methods;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_methods_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_solution_methods_SelectAll()
+ returns TABLE ("Idsolution_methods" int4, "Idsolution" int4, "Idtemplate_method" int4, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.solution_methods;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_methods_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_solution_methods_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idsolution_methods int4, idsolution int4, idtemplate_method int4, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.solution_methods WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_methods_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_solution_methods_DeleteByPrimaryKey
+(
+	p_idsolution_methods int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.solution_methods
+ WHERE 
+	idsolution_methods = p_idsolution_methods; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_methods_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_solution_methods_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.solution_methods WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_set_calibs_Insert(int4,varchar,numeric,numeric,numeric,int4,int4);
+CREATE OR REPLACE FUNCTION public.sp_set_calibs_Insert
+(
+	p_idset_calibs int4 ,
+	p_calib_group_name varchar(20) = null ,
+	p_r numeric = null ,
+	p_a numeric = null ,
+	p_b numeric = null ,
+	p_idtemplate_method int4 = null ,
+	p_idgroup_solution int4 = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.set_calibs
+(
+	calib_group_name,
+	r,
+	a,
+	b,
+	idtemplate_method,
+	idgroup_solution
+
+)
+VALUES
+(
+	p_calib_group_name,
+	p_r,
+	p_a,
+	p_b,
+	p_idtemplate_method,
+	p_idgroup_solution
+
+)returning idset_calibs into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_set_calibs_Update(int4,varchar,numeric,numeric,numeric,int4,int4);
+CREATE OR REPLACE FUNCTION public.sp_set_calibs_Update
+(
+	p_idset_calibs int4,
+	p_calib_group_name varchar(20) = null,
+	p_r numeric = null,
+	p_a numeric = null,
+	p_b numeric = null,
+	p_idtemplate_method int4 = null,
+	p_idgroup_solution int4 = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.set_calibs
+SET
+	calib_group_name = p_calib_group_name,
+	r = p_r,
+	a = p_a,
+	b = p_b,
+	idtemplate_method = p_idtemplate_method,
+	idgroup_solution = p_idgroup_solution
+ WHERE 
+	idset_calibs = p_idset_calibs;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_set_calibs_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_set_calibs_SelectByPrimaryKey
+(
+	p_idset_calibs int4
+) returns TABLE ("Idset_calibs" int4, "Calib_group_name" varchar, "R" numeric, "A" numeric, "B" numeric, "Idtemplate_method" int4, "Idgroup_solution" int4
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.set_calibs
+	WHERE 
+			idset_calibs = p_idset_calibs;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_set_calibs_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_set_calibs_SelectAll()
+ returns TABLE ("Idset_calibs" int4, "Calib_group_name" varchar, "R" numeric, "A" numeric, "B" numeric, "Idtemplate_method" int4, "Idgroup_solution" int4
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.set_calibs;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_set_calibs_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_set_calibs_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idset_calibs int4, calib_group_name varchar, r numeric, a numeric, b numeric, idtemplate_method int4, idgroup_solution int4
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.set_calibs WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_set_calibs_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_set_calibs_DeleteByPrimaryKey
+(
+	p_idset_calibs int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.set_calibs
+ WHERE 
+	idset_calibs = p_idset_calibs; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_set_calibs_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_set_calibs_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.set_calibs WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_Insert(int4,int2,varchar,int2,varchar,varchar,varchar,bpchar,bool,int4,varchar,varchar,numeric,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_template_method_Insert
+(
+	p_idtemplate_method int4 ,
+	p_num_version int2 = null ,
+	p_cod_template_method varchar(20) = null ,
+	p_cod_repetition int2 = null ,
+	p_title varchar(200) = null ,
+	p_abbreviation varchar(15) = null ,
+	p_name_method varchar(50) = null ,
+	p_type_analisys bpchar = null ,
+	p_recognized bool = null ,
+	p_idelement int4 = null ,
+	p_cod_type_sample varchar(5) = null ,
+	p_cod_digestion_method varchar(5) = null ,
+	p_cost_method numeric = null ,
+	p_usernew varchar(20) = null ,
+	p_datenew date = null ,
+	p_useredit varchar(20) = null ,
+	p_dateedit date = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.template_method
+(
+	num_version,
+	cod_template_method,
+	cod_repetition,
+	title,
+	abbreviation,
+	name_method,
+	type_analisys,
+	recognized,
+	idelement,
+	cod_type_sample,
+	cod_digestion_method,
+	cost_method,
+	usernew,
+	datenew,
+	useredit,
+	dateedit,
+	status
+
+)
+VALUES
+(
+	p_num_version,
+	p_cod_template_method,
+	p_cod_repetition,
+	p_title,
+	p_abbreviation,
+	p_name_method,
+	p_type_analisys,
+	p_recognized,
+	p_idelement,
+	p_cod_type_sample,
+	p_cod_digestion_method,
+	p_cost_method,
+	p_usernew,
+	p_datenew,
+	p_useredit,
+	p_dateedit,
+	p_status
+
+)returning idtemplate_method into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_Update(int4,int2,varchar,int2,varchar,varchar,varchar,bpchar,bool,int4,varchar,varchar,numeric,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_template_method_Update
+(
+	p_idtemplate_method int4,
+	p_num_version int2 = null,
+	p_cod_template_method varchar(20) = null,
+	p_cod_repetition int2 = null,
+	p_title varchar(200) = null,
+	p_abbreviation varchar(15) = null,
+	p_name_method varchar(50) = null,
+	p_type_analisys bpchar = null,
+	p_recognized bool = null,
+	p_idelement int4 = null,
+	p_cod_type_sample varchar(5) = null,
+	p_cod_digestion_method varchar(5) = null,
+	p_cost_method numeric = null,
+	p_usernew varchar(20) = null,
+	p_datenew date = null,
+	p_useredit varchar(20) = null,
+	p_dateedit date = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.template_method
+SET
+	num_version = p_num_version,
+	cod_template_method = p_cod_template_method,
+	cod_repetition = p_cod_repetition,
+	title = p_title,
+	abbreviation = p_abbreviation,
+	name_method = p_name_method,
+	type_analisys = p_type_analisys,
+	recognized = p_recognized,
+	idelement = p_idelement,
+	cod_type_sample = p_cod_type_sample,
+	cod_digestion_method = p_cod_digestion_method,
+	cost_method = p_cost_method,
+	usernew = p_usernew,
+	datenew = p_datenew,
+	useredit = p_useredit,
+	dateedit = p_dateedit,
+	status = p_status
+ WHERE 
+	idtemplate_method = p_idtemplate_method;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_template_method_SelectByPrimaryKey
+(
+	p_idtemplate_method int4
+) returns TABLE ("Idtemplate_method" int4, "Num_version" int2, "Cod_template_method" varchar, "Cod_repetition" int2, "Title" varchar, "Abbreviation" varchar, "Name_method" varchar, "Type_analisys" bpchar, "Recognized" bool, "Idelement" int4, "Cod_type_sample" varchar, "Cod_digestion_method" varchar, "Cost_method" numeric, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.template_method
+	WHERE 
+			idtemplate_method = p_idtemplate_method;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_template_method_SelectAll()
+ returns TABLE ("Idtemplate_method" int4, "Num_version" int2, "Cod_template_method" varchar, "Cod_repetition" int2, "Title" varchar, "Abbreviation" varchar, "Name_method" varchar, "Type_analisys" bpchar, "Recognized" bool, "Idelement" int4, "Cod_type_sample" varchar, "Cod_digestion_method" varchar, "Cost_method" numeric, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.template_method;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_template_method_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idtemplate_method int4, num_version int2, cod_template_method varchar, cod_repetition int2, title varchar, abbreviation varchar, name_method varchar, type_analisys bpchar, recognized bool, idelement int4, cod_type_sample varchar, cod_digestion_method varchar, cost_method numeric, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.template_method WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_template_method_DeleteByPrimaryKey
+(
+	p_idtemplate_method int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.template_method
+ WHERE 
+	idtemplate_method = p_idtemplate_method; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_template_method_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_template_method_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.template_method WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_group_solution_Insert(int4,int4,int4,bool,bool,bool,int2,timestamp,int4,int4,int4,int4,int2,varchar,timestamp,timestamp);
+CREATE OR REPLACE FUNCTION public.sp_group_solution_Insert
+(
+	p_idgroup_solution int4 ,
+	p_idelement int4 = null ,
+	p_idtemplate_method int4 = null ,
+	p_flag_selected_methods bool = null ,
+	p_flag_close_calib bool = null ,
+	p_flag_sign_calib bool = null ,
+	p_user_sign_calib int2 = null ,
+	p_date_sign_calib timestamp = null ,
+	p_type_solution int4 = null ,
+	p_idreactive_medium int4 = null ,
+	p_idreactive_modif int4 = null ,
+	p_type_pattern int4 = null ,
+	p_idmr_detail int2 = null ,
+	p_cod_solution varchar(20) = null ,
+	p_date_ini timestamp = null ,
+	p_date_end timestamp = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.group_solution
+(
+	idelement,
+	idtemplate_method,
+	flag_selected_methods,
+	flag_close_calib,
+	flag_sign_calib,
+	user_sign_calib,
+	date_sign_calib,
+	type_solution,
+	idreactive_medium,
+	idreactive_modif,
+	type_pattern,
+	idmr_detail,
+	cod_solution,
+	date_ini,
+	date_end
+
+)
+VALUES
+(
+	p_idelement,
+	p_idtemplate_method,
+	p_flag_selected_methods,
+	p_flag_close_calib,
+	p_flag_sign_calib,
+	p_user_sign_calib,
+	p_date_sign_calib,
+	p_type_solution,
+	p_idreactive_medium,
+	p_idreactive_modif,
+	p_type_pattern,
+	p_idmr_detail,
+	p_cod_solution,
+	p_date_ini,
+	p_date_end
+
+)returning idgroup_solution into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_group_solution_Update(int4,int4,int4,bool,bool,bool,int2,timestamp,int4,int4,int4,int4,int2,varchar,timestamp,timestamp);
+CREATE OR REPLACE FUNCTION public.sp_group_solution_Update
+(
+	p_idgroup_solution int4,
+	p_idelement int4 = null,
+	p_idtemplate_method int4 = null,
+	p_flag_selected_methods bool = null,
+	p_flag_close_calib bool = null,
+	p_flag_sign_calib bool = null,
+	p_user_sign_calib int2 = null,
+	p_date_sign_calib timestamp = null,
+	p_type_solution int4 = null,
+	p_idreactive_medium int4 = null,
+	p_idreactive_modif int4 = null,
+	p_type_pattern int4 = null,
+	p_idmr_detail int2 = null,
+	p_cod_solution varchar(20) = null,
+	p_date_ini timestamp = null,
+	p_date_end timestamp = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.group_solution
+SET
+	idelement = p_idelement,
+	idtemplate_method = p_idtemplate_method,
+	flag_selected_methods = p_flag_selected_methods,
+	flag_close_calib = p_flag_close_calib,
+	flag_sign_calib = p_flag_sign_calib,
+	user_sign_calib = p_user_sign_calib,
+	date_sign_calib = p_date_sign_calib,
+	type_solution = p_type_solution,
+	idreactive_medium = p_idreactive_medium,
+	idreactive_modif = p_idreactive_modif,
+	type_pattern = p_type_pattern,
+	idmr_detail = p_idmr_detail,
+	cod_solution = p_cod_solution,
+	date_ini = p_date_ini,
+	date_end = p_date_end
+ WHERE 
+	idgroup_solution = p_idgroup_solution;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_group_solution_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_group_solution_SelectByPrimaryKey
+(
+	p_idgroup_solution int4
+) returns TABLE ("Idgroup_solution" int4, "Idelement" int4, "Idtemplate_method" int4, "Flag_selected_methods" bool, "Flag_close_calib" bool, "Flag_sign_calib" bool, "User_sign_calib" int2, "Date_sign_calib" timestamp, "Type_solution" int4, "Idreactive_medium" int4, "Idreactive_modif" int4, "Type_pattern" int4, "Idmr_detail" int2, "Cod_solution" varchar, "Date_ini" timestamp, "Date_end" timestamp
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.group_solution
+	WHERE 
+			idgroup_solution = p_idgroup_solution;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_group_solution_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_group_solution_SelectAll()
+ returns TABLE ("Idgroup_solution" int4, "Idelement" int4, "Idtemplate_method" int4, "Flag_selected_methods" bool, "Flag_close_calib" bool, "Flag_sign_calib" bool, "User_sign_calib" int2, "Date_sign_calib" timestamp, "Type_solution" int4, "Idreactive_medium" int4, "Idreactive_modif" int4, "Type_pattern" int4, "Idmr_detail" int2, "Cod_solution" varchar, "Date_ini" timestamp, "Date_end" timestamp
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.group_solution;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_group_solution_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_group_solution_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idgroup_solution int4, idelement int4, idtemplate_method int4, flag_selected_methods bool, flag_close_calib bool, flag_sign_calib bool, user_sign_calib int2, date_sign_calib timestamp, type_solution int4, idreactive_medium int4, idreactive_modif int4, type_pattern int4, idmr_detail int2, cod_solution varchar, date_ini timestamp, date_end timestamp
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.group_solution WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_group_solution_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_group_solution_DeleteByPrimaryKey
+(
+	p_idgroup_solution int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.group_solution
+ WHERE 
+	idgroup_solution = p_idgroup_solution; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_group_solution_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_group_solution_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.group_solution WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_std_Insert(int8,int8,numeric,numeric,numeric,int4,int4,int4);
+CREATE OR REPLACE FUNCTION public.sp_calib_std_Insert
+(
+	p_idcalib_std int8 ,
+	p_idcalib int8 = null ,
+	p_absorbance numeric = null ,
+	p_absorbance_previus numeric = null ,
+	p_concentration numeric = null ,
+	p_idset_calibs int4 = null ,
+	p_idtemplate_method int4 = null ,
+	p_idgroup_solution int4 = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.calib_std
+(
+	idcalib,
+	absorbance,
+	absorbance_previus,
+	concentration,
+	idset_calibs,
+	idtemplate_method,
+	idgroup_solution
+
+)
+VALUES
+(
+	p_idcalib,
+	p_absorbance,
+	p_absorbance_previus,
+	p_concentration,
+	p_idset_calibs,
+	p_idtemplate_method,
+	p_idgroup_solution
+
+)returning idcalib_std into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_std_Update(int8,int8,numeric,numeric,numeric,int4,int4,int4);
+CREATE OR REPLACE FUNCTION public.sp_calib_std_Update
+(
+	p_idcalib_std int8,
+	p_idcalib int8 = null,
+	p_absorbance numeric = null,
+	p_absorbance_previus numeric = null,
+	p_concentration numeric = null,
+	p_idset_calibs int4 = null,
+	p_idtemplate_method int4 = null,
+	p_idgroup_solution int4 = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.calib_std
+SET
+	idcalib = p_idcalib,
+	absorbance = p_absorbance,
+	absorbance_previus = p_absorbance_previus,
+	concentration = p_concentration,
+	idset_calibs = p_idset_calibs,
+	idtemplate_method = p_idtemplate_method,
+	idgroup_solution = p_idgroup_solution
+ WHERE 
+	idcalib_std = p_idcalib_std;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_std_SelectByPrimaryKey(int8);
+CREATE OR REPLACE FUNCTION public.sp_calib_std_SelectByPrimaryKey
+(
+	p_idcalib_std int8
+) returns TABLE ("Idcalib_std" int8, "Idcalib" int8, "Absorbance" numeric, "Absorbance_previus" numeric, "Concentration" numeric, "Idset_calibs" int4, "Idtemplate_method" int4, "Idgroup_solution" int4
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.calib_std
+	WHERE 
+			idcalib_std = p_idcalib_std;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_std_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_calib_std_SelectAll()
+ returns TABLE ("Idcalib_std" int8, "Idcalib" int8, "Absorbance" numeric, "Absorbance_previus" numeric, "Concentration" numeric, "Idset_calibs" int4, "Idtemplate_method" int4, "Idgroup_solution" int4
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.calib_std;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_std_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_calib_std_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idcalib_std int8, idcalib int8, absorbance numeric, absorbance_previus numeric, concentration numeric, idset_calibs int4, idtemplate_method int4, idgroup_solution int4
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.calib_std WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_std_DeleteByPrimaryKey(int8);
+CREATE OR REPLACE FUNCTION public.sp_calib_std_DeleteByPrimaryKey
+(
+	p_idcalib_std int8
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.calib_std
+ WHERE 
+	idcalib_std = p_idcalib_std; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_calib_std_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_calib_std_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.calib_std WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_titration_main_Insert(int4,int4,int4,int4,int4,numeric,numeric,int2,int4,int2,timestamp,int2,timestamp,int2,timestamp,int2,timestamp);
+CREATE OR REPLACE FUNCTION public.sp_titration_main_Insert
+(
+	p_idtitration_main int4 ,
+	p_num_analyst int4 = null ,
+	p_type_average int4 = null ,
+	p_num_test int4 = null ,
+	p_concentration_unit int4 = null ,
+	p_concentration_value numeric = null ,
+	p_factor numeric = null ,
+	p_idunit_measure_factor int2 = null ,
+	p_status_process int4 = null ,
+	p_analyst1 int2 = null ,
+	p_date_analyst1 timestamp = null ,
+	p_analyst2 int2 = null ,
+	p_date_analyst2 timestamp = null ,
+	p_analyst3 int2 = null ,
+	p_date_analyst3 timestamp = null ,
+	p_analyst4 int2 = null ,
+	p_date_analyst4 timestamp = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.titration_main
+(
+	idtitration_main,
+	num_analyst,
+	type_average,
+	num_test,
+	concentration_unit,
+	concentration_value,
+	factor,
+	idunit_measure_factor,
+	status_process,
+	analyst1,
+	date_analyst1,
+	analyst2,
+	date_analyst2,
+	analyst3,
+	date_analyst3,
+	analyst4,
+	date_analyst4
+
+)
+VALUES
+(
+	p_idtitration_main,
+	p_num_analyst,
+	p_type_average,
+	p_num_test,
+	p_concentration_unit,
+	p_concentration_value,
+	p_factor,
+	p_idunit_measure_factor,
+	p_status_process,
+	p_analyst1,
+	p_date_analyst1,
+	p_analyst2,
+	p_date_analyst2,
+	p_analyst3,
+	p_date_analyst3,
+	p_analyst4,
+	p_date_analyst4
+
+);
+get diagnostics result = ROW_COUNT;return result;
+
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_titration_main_Update(int4,int4,int4,int4,int4,numeric,numeric,int2,int4,int2,timestamp,int2,timestamp,int2,timestamp,int2,timestamp);
+CREATE OR REPLACE FUNCTION public.sp_titration_main_Update
+(
+	p_idtitration_main int4,
+	p_num_analyst int4 = null,
+	p_type_average int4 = null,
+	p_num_test int4 = null,
+	p_concentration_unit int4 = null,
+	p_concentration_value numeric = null,
+	p_factor numeric = null,
+	p_idunit_measure_factor int2 = null,
+	p_status_process int4 = null,
+	p_analyst1 int2 = null,
+	p_date_analyst1 timestamp = null,
+	p_analyst2 int2 = null,
+	p_date_analyst2 timestamp = null,
+	p_analyst3 int2 = null,
+	p_date_analyst3 timestamp = null,
+	p_analyst4 int2 = null,
+	p_date_analyst4 timestamp = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.titration_main
+SET
+	idtitration_main = p_idtitration_main,
+	num_analyst = p_num_analyst,
+	type_average = p_type_average,
+	num_test = p_num_test,
+	concentration_unit = p_concentration_unit,
+	concentration_value = p_concentration_value,
+	factor = p_factor,
+	idunit_measure_factor = p_idunit_measure_factor,
+	status_process = p_status_process,
+	analyst1 = p_analyst1,
+	date_analyst1 = p_date_analyst1,
+	analyst2 = p_analyst2,
+	date_analyst2 = p_date_analyst2,
+	analyst3 = p_analyst3,
+	date_analyst3 = p_date_analyst3,
+	analyst4 = p_analyst4,
+	date_analyst4 = p_date_analyst4
+ WHERE 
+	idtitration_main = p_idtitration_main;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_titration_main_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_titration_main_SelectByPrimaryKey
+(
+	p_idtitration_main int4
+) returns TABLE ("Idtitration_main" int4, "Num_analyst" int4, "Type_average" int4, "Num_test" int4, "Concentration_unit" int4, "Concentration_value" numeric, "Factor" numeric, "Idunit_measure_factor" int2, "Status_process" int4, "Analyst1" int2, "Date_analyst1" timestamp, "Analyst2" int2, "Date_analyst2" timestamp, "Analyst3" int2, "Date_analyst3" timestamp, "Analyst4" int2, "Date_analyst4" timestamp
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.titration_main
+	WHERE 
+			idtitration_main = p_idtitration_main;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_titration_main_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_titration_main_SelectAll()
+ returns TABLE ("Idtitration_main" int4, "Num_analyst" int4, "Type_average" int4, "Num_test" int4, "Concentration_unit" int4, "Concentration_value" numeric, "Factor" numeric, "Idunit_measure_factor" int2, "Status_process" int4, "Analyst1" int2, "Date_analyst1" timestamp, "Analyst2" int2, "Date_analyst2" timestamp, "Analyst3" int2, "Date_analyst3" timestamp, "Analyst4" int2, "Date_analyst4" timestamp
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.titration_main;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_titration_main_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_titration_main_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idtitration_main int4, num_analyst int4, type_average int4, num_test int4, concentration_unit int4, concentration_value numeric, factor numeric, idunit_measure_factor int2, status_process int4, analyst1 int2, date_analyst1 timestamp, analyst2 int2, date_analyst2 timestamp, analyst3 int2, date_analyst3 timestamp, analyst4 int2, date_analyst4 timestamp
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.titration_main WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_titration_main_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_titration_main_DeleteByPrimaryKey
+(
+	p_idtitration_main int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.titration_main
+ WHERE 
+	idtitration_main = p_idtitration_main; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_titration_main_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_titration_main_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.titration_main WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_Insert(int4,int4,int4,int4,int4,varchar,int4,varchar,numeric,numeric,numeric,numeric,date,date,int4,int2,varchar,varchar,bool,int4,numeric,int4,numeric,varchar,int4,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_solution_Insert
+(
+	p_idsolution int4 ,
+	p_id int4 = null ,
+	p_parentid int4 = null ,
+	p_idgroup_solution int4 = null ,
+	p_idelement int4 = null ,
+	p_cod_solution varchar(20) = null ,
+	p_type_sol int4 = null ,
+	p_solution_name varchar(50) = null ,
+	p_purity numeric = null ,
+	p_concentration numeric = null ,
+	p_aliquot numeric = null ,
+	p_volumen numeric = null ,
+	p_date_begin date = null ,
+	p_date_end date = null ,
+	p_num_months int4 = null ,
+	p_prepared_by int2 = null ,
+	p_observation varchar(100) = null ,
+	p_lote varchar(12) = null ,
+	p_solution_status bool = null ,
+	p_idreactive_medium int4 = null ,
+	p_reactive_medium_value numeric = null ,
+	p_idreactive_modif int4 = null ,
+	p_reactive_modif_value numeric = null ,
+	p_concat_cod_methods varchar(100) = null ,
+	p_image_index int4 = null ,
+	p_usernew varchar(20) = null ,
+	p_datenew date = null ,
+	p_useredit varchar(20) = null ,
+	p_dateedit date = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.solution
+(
+	id,
+	parentid,
+	idgroup_solution,
+	idelement,
+	cod_solution,
+	type_sol,
+	solution_name,
+	purity,
+	concentration,
+	aliquot,
+	volumen,
+	date_begin,
+	date_end,
+	num_months,
+	prepared_by,
+	observation,
+	lote,
+	solution_status,
+	idreactive_medium,
+	reactive_medium_value,
+	idreactive_modif,
+	reactive_modif_value,
+	concat_cod_methods,
+	image_index,
+	usernew,
+	datenew,
+	useredit,
+	dateedit,
+	status
+
+)
+VALUES
+(
+	p_id,
+	p_parentid,
+	p_idgroup_solution,
+	p_idelement,
+	p_cod_solution,
+	p_type_sol,
+	p_solution_name,
+	p_purity,
+	p_concentration,
+	p_aliquot,
+	p_volumen,
+	p_date_begin,
+	p_date_end,
+	p_num_months,
+	p_prepared_by,
+	p_observation,
+	p_lote,
+	p_solution_status,
+	p_idreactive_medium,
+	p_reactive_medium_value,
+	p_idreactive_modif,
+	p_reactive_modif_value,
+	p_concat_cod_methods,
+	p_image_index,
+	p_usernew,
+	p_datenew,
+	p_useredit,
+	p_dateedit,
+	p_status
+
+)returning idsolution into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_Update(int4,int4,int4,int4,int4,varchar,int4,varchar,numeric,numeric,numeric,numeric,date,date,int4,int2,varchar,varchar,bool,int4,numeric,int4,numeric,varchar,int4,varchar,date,varchar,date,bool);
+CREATE OR REPLACE FUNCTION public.sp_solution_Update
+(
+	p_idsolution int4,
+	p_id int4 = null,
+	p_parentid int4 = null,
+	p_idgroup_solution int4 = null,
+	p_idelement int4 = null,
+	p_cod_solution varchar(20) = null,
+	p_type_sol int4 = null,
+	p_solution_name varchar(50) = null,
+	p_purity numeric = null,
+	p_concentration numeric = null,
+	p_aliquot numeric = null,
+	p_volumen numeric = null,
+	p_date_begin date = null,
+	p_date_end date = null,
+	p_num_months int4 = null,
+	p_prepared_by int2 = null,
+	p_observation varchar(100) = null,
+	p_lote varchar(12) = null,
+	p_solution_status bool = null,
+	p_idreactive_medium int4 = null,
+	p_reactive_medium_value numeric = null,
+	p_idreactive_modif int4 = null,
+	p_reactive_modif_value numeric = null,
+	p_concat_cod_methods varchar(100) = null,
+	p_image_index int4 = null,
+	p_usernew varchar(20) = null,
+	p_datenew date = null,
+	p_useredit varchar(20) = null,
+	p_dateedit date = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.solution
+SET
+	id = p_id,
+	parentid = p_parentid,
+	idgroup_solution = p_idgroup_solution,
+	idelement = p_idelement,
+	cod_solution = p_cod_solution,
+	type_sol = p_type_sol,
+	solution_name = p_solution_name,
+	purity = p_purity,
+	concentration = p_concentration,
+	aliquot = p_aliquot,
+	volumen = p_volumen,
+	date_begin = p_date_begin,
+	date_end = p_date_end,
+	num_months = p_num_months,
+	prepared_by = p_prepared_by,
+	observation = p_observation,
+	lote = p_lote,
+	solution_status = p_solution_status,
+	idreactive_medium = p_idreactive_medium,
+	reactive_medium_value = p_reactive_medium_value,
+	idreactive_modif = p_idreactive_modif,
+	reactive_modif_value = p_reactive_modif_value,
+	concat_cod_methods = p_concat_cod_methods,
+	image_index = p_image_index,
+	usernew = p_usernew,
+	datenew = p_datenew,
+	useredit = p_useredit,
+	dateedit = p_dateedit,
+	status = p_status
+ WHERE 
+	idsolution = p_idsolution;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_solution_SelectByPrimaryKey
+(
+	p_idsolution int4
+) returns TABLE ("Idsolution" int4, "Id" int4, "Parentid" int4, "Idgroup_solution" int4, "Idelement" int4, "Cod_solution" varchar, "Type_sol" int4, "Solution_name" varchar, "Purity" numeric, "Concentration" numeric, "Aliquot" numeric, "Volumen" numeric, "Date_begin" date, "Date_end" date, "Num_months" int4, "Prepared_by" int2, "Observation" varchar, "Lote" varchar, "Solution_status" bool, "Idreactive_medium" int4, "Reactive_medium_value" numeric, "Idreactive_modif" int4, "Reactive_modif_value" numeric, "Concat_cod_methods" varchar, "Image_index" int4, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.solution
+	WHERE 
+			idsolution = p_idsolution;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_solution_SelectAll()
+ returns TABLE ("Idsolution" int4, "Id" int4, "Parentid" int4, "Idgroup_solution" int4, "Idelement" int4, "Cod_solution" varchar, "Type_sol" int4, "Solution_name" varchar, "Purity" numeric, "Concentration" numeric, "Aliquot" numeric, "Volumen" numeric, "Date_begin" date, "Date_end" date, "Num_months" int4, "Prepared_by" int2, "Observation" varchar, "Lote" varchar, "Solution_status" bool, "Idreactive_medium" int4, "Reactive_medium_value" numeric, "Idreactive_modif" int4, "Reactive_modif_value" numeric, "Concat_cod_methods" varchar, "Image_index" int4, "Usernew" varchar, "Datenew" date, "Useredit" varchar, "Dateedit" date, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.solution;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_solution_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idsolution int4, id int4, parentid int4, idgroup_solution int4, idelement int4, cod_solution varchar, type_sol int4, solution_name varchar, purity numeric, concentration numeric, aliquot numeric, volumen numeric, date_begin date, date_end date, num_months int4, prepared_by int2, observation varchar, lote varchar, solution_status bool, idreactive_medium int4, reactive_medium_value numeric, idreactive_modif int4, reactive_modif_value numeric, concat_cod_methods varchar, image_index int4, usernew varchar, datenew date, useredit varchar, dateedit date, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.solution WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_solution_DeleteByPrimaryKey
+(
+	p_idsolution int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.solution
+ WHERE 
+	idsolution = p_idsolution; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_solution_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.solution WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_user_system_Insert(int2,varchar,varchar,int2,varchar,timestamp,varchar,timestamp,bool);
+CREATE OR REPLACE FUNCTION public.sp_user_system_Insert
+(
+	p_iduser int2 ,
+	p_cod_user varchar(30) ,
+	p_pwd varchar(32) ,
+	p_idperson int2 = null ,
+	p_usernew varchar(50) = null ,
+	p_datenew timestamp = null ,
+	p_useredit varchar(50) = null ,
+	p_dateedit timestamp = null ,
+	p_status bool = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.user_system
+(
+	cod_user,
+	pwd,
+	idperson,
+	usernew,
+	datenew,
+	useredit,
+	dateedit,
+	status
+
+)
+VALUES
+(
+	p_cod_user,
+	p_pwd,
+	p_idperson,
+	p_usernew,
+	p_datenew,
+	p_useredit,
+	p_dateedit,
+	p_status
+
+)returning iduser into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_user_system_Update(int2,varchar,varchar,int2,varchar,timestamp,varchar,timestamp,bool);
+CREATE OR REPLACE FUNCTION public.sp_user_system_Update
+(
+	p_iduser int2,
+	p_cod_user varchar(30),
+	p_pwd varchar(32),
+	p_idperson int2 = null,
+	p_usernew varchar(50) = null,
+	p_datenew timestamp = null,
+	p_useredit varchar(50) = null,
+	p_dateedit timestamp = null,
+	p_status bool = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.user_system
+SET
+	cod_user = p_cod_user,
+	pwd = p_pwd,
+	idperson = p_idperson,
+	usernew = p_usernew,
+	datenew = p_datenew,
+	useredit = p_useredit,
+	dateedit = p_dateedit,
+	status = p_status
+ WHERE 
+	iduser = p_iduser;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_user_system_SelectByPrimaryKey(int2);
+CREATE OR REPLACE FUNCTION public.sp_user_system_SelectByPrimaryKey
+(
+	p_iduser int2
+) returns TABLE ("Iduser" int2, "Cod_user" varchar, "Pwd" varchar, "Idperson" int2, "Usernew" varchar, "Datenew" timestamp, "Useredit" varchar, "Dateedit" timestamp, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.user_system
+	WHERE 
+			iduser = p_iduser;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_user_system_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_user_system_SelectAll()
+ returns TABLE ("Iduser" int2, "Cod_user" varchar, "Pwd" varchar, "Idperson" int2, "Usernew" varchar, "Datenew" timestamp, "Useredit" varchar, "Dateedit" timestamp, "Status" bool
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.user_system;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_user_system_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_user_system_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (iduser int2, cod_user varchar, pwd varchar, idperson int2, usernew varchar, datenew timestamp, useredit varchar, dateedit timestamp, status bool
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.user_system WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_user_system_DeleteByPrimaryKey(int2);
+CREATE OR REPLACE FUNCTION public.sp_user_system_DeleteByPrimaryKey
+(
+	p_iduser int2
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.user_system
+ WHERE 
+	iduser = p_iduser; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_user_system_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_user_system_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.user_system WHERE ' || FieldName  ||' = '|| Value 
+	USING Value;
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_titration_Insert(int4,int4,int4,numeric,numeric,numeric,numeric,int2,timestamp,bool,numeric);
+CREATE OR REPLACE FUNCTION public.sp_solution_titration_Insert
+(
+	p_idsolution_titration int4 ,
+	p_idtitration_main int4 = null ,
+	p_idsolution int4 = null ,
+	p_aliquot numeric = null ,
+	p_theorical_reading numeric = null ,
+	p_practice_reading numeric = null ,
+	p_factor numeric = null ,
+	p_prepared_by int2 = null ,
+	p_date_prepared timestamp = null ,
+	p_status_titration bool = null ,
+	p_average numeric = null 
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+INSERT INTO public.solution_titration
+(
+	idtitration_main,
+	idsolution,
+	aliquot,
+	theorical_reading,
+	practice_reading,
+	factor,
+	prepared_by,
+	date_prepared,
+	status_titration,
+	average
+
+)
+VALUES
+(
+	p_idtitration_main,
+	p_idsolution,
+	p_aliquot,
+	p_theorical_reading,
+	p_practice_reading,
+	p_factor,
+	p_prepared_by,
+	p_date_prepared,
+	p_status_titration,
+	p_average
+
+)returning idsolution_titration into result;
+	return result;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_titration_Update(int4,int4,int4,numeric,numeric,numeric,numeric,int2,timestamp,bool,numeric);
+CREATE OR REPLACE FUNCTION public.sp_solution_titration_Update
+(
+	p_idsolution_titration int4,
+	p_idtitration_main int4 = null,
+	p_idsolution int4 = null,
+	p_aliquot numeric = null,
+	p_theorical_reading numeric = null,
+	p_practice_reading numeric = null,
+	p_factor numeric = null,
+	p_prepared_by int2 = null,
+	p_date_prepared timestamp = null,
+	p_status_titration bool = null,
+	p_average numeric = null
+
+)returns int8 AS $$
+Declare result int8;
+BEGIN
+
+UPDATE public.solution_titration
+SET
+	idtitration_main = p_idtitration_main,
+	idsolution = p_idsolution,
+	aliquot = p_aliquot,
+	theorical_reading = p_theorical_reading,
+	practice_reading = p_practice_reading,
+	factor = p_factor,
+	prepared_by = p_prepared_by,
+	date_prepared = p_date_prepared,
+	status_titration = p_status_titration,
+	average = p_average
+ WHERE 
+	idsolution_titration = p_idsolution_titration;
+	get diagnostics result = ROW_COUNT;
+	return result;
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_titration_SelectByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_solution_titration_SelectByPrimaryKey
+(
+	p_idsolution_titration int4
+) returns TABLE ("Idsolution_titration" int4, "Idtitration_main" int4, "Idsolution" int4, "Aliquot" numeric, "Theorical_reading" numeric, "Practice_reading" numeric, "Factor" numeric, "Prepared_by" int2, "Date_prepared" timestamp, "Status_titration" bool, "Average" numeric
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.solution_titration
+	WHERE 
+			idsolution_titration = p_idsolution_titration;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_titration_SelectAll();
+CREATE OR REPLACE FUNCTION public.sp_solution_titration_SelectAll()
+ returns TABLE ("Idsolution_titration" int4, "Idtitration_main" int4, "Idsolution" int4, "Aliquot" numeric, "Theorical_reading" numeric, "Practice_reading" numeric, "Factor" numeric, "Prepared_by" int2, "Date_prepared" timestamp, "Status_titration" bool, "Average" numeric
+)AS $$
+BEGIN
+
+	return query
+	SELECT *
+	FROM public.solution_titration;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_titration_SelectByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_solution_titration_SelectByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+ returns TABLE (idsolution_titration int4, idtitration_main int4, idsolution int4, aliquot numeric, theorical_reading numeric, practice_reading numeric, factor numeric, prepared_by int2, date_prepared timestamp, status_titration bool, average numeric
+)AS $$
+BEGIN
+
+
+	return query EXECUTE 'SELECT * FROM public.solution_titration WHERE '|| FieldName ||' = '|| Value 
+	USING Value;
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_titration_DeleteByPrimaryKey(int4);
+CREATE OR REPLACE FUNCTION public.sp_solution_titration_DeleteByPrimaryKey
+(
+	p_idsolution_titration int4
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+DELETE FROM public.solution_titration
+ WHERE 
+	idsolution_titration = p_idsolution_titration; 
+	get diagnostics result = ROW_COUNT;
+	RETURN  result;	
+
+END;
+$$ LANGUAGE plpgsql;
+
+drop function if exists public.sp_solution_titration_DeleteByField(varchar,varchar);
+CREATE OR REPLACE FUNCTION public.sp_solution_titration_DeleteByField
+(
+	FieldName varchar(100),
+	Value varchar(1000)
+)
+returns int4 AS $$
+declare result int;
+BEGIN
+
+
+	EXECUTE 'DELETE FROM public.solution_titration WHERE ' || FieldName  ||' = '|| Value 
 	USING Value;
 	get diagnostics result = ROW_COUNT;
 	RETURN  result;	
