@@ -21,6 +21,42 @@ create table reactive
 	weight_molecular	numeric(5,4)
 );
 
+-- drop table solution_interm
+create table solution_interm
+(
+	idsolution_interm serial primary key,
+	id		int,
+	parentid	int,	
+	idelement	int references element(idelement),
+	cod_solution 	varchar(20),
+	type_sol	int, -- 1:solution intermedia 1, 2:solution intermedia 2, 3: estandar verificación
+	solution_name	varchar(50),
+	purity		numeric(6,2),
+	concentration	decimal,	
+	aliquot		numeric(10,4),
+	volumen		numeric(10,2),
+	date_begin	date,
+	date_end	date,
+	num_months	int,
+	prepared_by	smallint references user_system(iduser),
+	observation	varchar(100),
+	lote		varchar(12),
+	solution_status	boolean,
+	root_type_pattern	int, -- 1:mrc, 2:patron solucion
+	root_idmr_detail	smallint references Mr_detail(idmr_detail),
+	idreactive_medium 	integer references reactive (idreactive),
+	reactive_medium_value	numeric(10,4),
+	idreactive_modif 	integer references reactive (idreactive),
+	reactive_modif_value	numeric(10,4),
+	concat_cod_methods	varchar(100),
+	image_index	int,
+	UserNew		varchar(20),
+	DateNew		date,
+	UserEdit	varchar(20),
+	DateEdit	date,
+	Status		boolean
+);
+
 -- drop table group_solution
 create table group_solution
 (
@@ -51,7 +87,7 @@ create table solution
 	idgroup_solution int references group_solution(idgroup_solution),
 	idelement	int references element(idelement),
 	cod_solution 	varchar(20),
-	type_sol	int, -- 1:solution intermedia 1, 2:solution intermedia 2, 3: estandar verificación en 1, 4: estandar de verificacion en 2, 5: estandar verificación en root
+	type_sol	int, -- 1:solution intermedia 1, 2:solution intermedia 2, 3: estandar verificación
 	solution_name	varchar(50),
 	purity		numeric(6,2),
 	concentration	decimal,	
@@ -64,6 +100,8 @@ create table solution
 	observation	varchar(100),
 	lote		varchar(12),
 	solution_status	boolean,
+	root_type_pattern	int, -- 1:mrc, 2:patron solucion
+	root_idmr_detail	smallint references Mr_detail(idmr_detail),
 	idreactive_medium 	integer references reactive (idreactive),
 	reactive_medium_value	numeric(10,4),
 	idreactive_modif 	integer references reactive (idreactive),
