@@ -41,20 +41,30 @@ create table solution_interm
 	prepared_by	smallint references user_system(iduser),
 	observation	varchar(100),
 	lote		varchar(12),
-	solution_status	boolean,
+	solution_status	boolean, -- activado = true, desactivado = false
+	expired_status 	boolean, -- expirado = true, no expirado = false
 	root_type_pattern	int, -- 1:mrc, 2:patron solucion
 	root_idmr_detail	smallint references Mr_detail(idmr_detail),
 	idreactive_medium 	integer references reactive (idreactive),
 	reactive_medium_value	numeric(10,4),
 	idreactive_modif 	integer references reactive (idreactive),
 	reactive_modif_value	numeric(10,4),
-	concat_cod_methods	varchar(100),
+	flag_current_method	boolean,
 	image_index	int,
 	UserNew		varchar(20),
 	DateNew		date,
 	UserEdit	varchar(20),
 	DateEdit	date,
 	Status		boolean
+);
+
+-- drop table solution_interm_methods
+create table solution_interm_methods
+(
+	idsolution_methods serial primary key,
+	idsolution_interm int references solution_interm(idsolution_interm),
+	idtemplate_method int references template_method(idtemplate_method),
+	status boolean
 );
 
 -- drop table group_solution

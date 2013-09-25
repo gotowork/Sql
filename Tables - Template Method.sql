@@ -38,7 +38,7 @@ CREATE TABLE template_method_aa
 	error_allowed	decimal(10,5),
 	
 	-- Results
-	symbol		varchar(10),	
+	symbol		varchar(10),
 	law_limit_bottom	decimal(10,5),
 	law_limit_top	decimal(10,5),
 
@@ -83,11 +83,8 @@ CREATE TABLE template_method_aa
 	std_flag_sol_intermedia2	boolean,
 	std_concentration	decimal(10,4),
 	std_concentration_sol1	decimal(5,2),
-	std_concentration_sol2	decimal(5,2),
-	std_validity		smallint,
+	std_concentration_sol2	decimal(5,2),	
 	std_status		boolean,
-	std_date_preparation	timestamp,
-	std_date_expiration	timestamp,
 	std_sol1_medium		decimal(10,4),
 	std_sol2_medium		decimal(10,4),
 	std_stdverif_medium	decimal(10,4),
@@ -95,7 +92,10 @@ CREATE TABLE template_method_aa
 	idunit_result	int2 references measurement_unit(idunit),
 	Num_samples	smallint,
 	Num_days	smallint,
-	Limit_samples	smallint
+	Limit_samples	smallint,
+	std_validity_sol1	smallint,
+	std_validity_sol2	smallint,
+	std_validity_sv		smallint
 );
 
 -- drop table template_method_ah
