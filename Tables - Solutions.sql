@@ -29,7 +29,7 @@ create table solution_interm
 	parentid	int,	
 	idelement	int references element(idelement),
 	cod_solution 	varchar(20),
-	type_sol	int, -- 1:solution intermedia 1, 2:solution intermedia 2, 3: estandar verificación
+	type_sol	int, -- 1:solution intermedia 1, 2:solution intermedia 2, 3: estandar verificación, 4: estandar calibracion
 	solution_name	varchar(50),
 	purity		numeric(6,2),
 	concentration	decimal,	
@@ -67,27 +67,6 @@ create table solution_interm_methods
 	status boolean
 );
 
--- drop table group_solution
-create table group_solution
-(
-	idgroup_solution serial primary key,		
-	idelement 		int references element(idelement),
-	idtemplate_method	int references template_method_aa(idtemplate_method),
-	flag_selected_methods	boolean,
-	Flag_close_calib	boolean,
-	Flag_sign_calib		boolean,
-	User_sign_calib		smallint references user_system(iduser),
-	Date_sign_calib		timestamp,
-	Type_solution		int,-- 1:SC, 2:SI-1, 3:SI-2, 4:EV, 5:ST
-	idreactive_medium	int references reactive(idreactive),
-	idreactive_modif	int references reactive(idreactive),
-	type_pattern		int, -- 1:mrc, 2:patron solucion
-	idmr_detail		smallint references Mr_detail(idmr_detail),
-	cod_solution		varchar(20),
-	date_ini 		timestamp,
-	date_end 		timestamp
-);
-
 -- drop table solution
 create table solution
 (
@@ -100,7 +79,7 @@ create table solution
 	type_sol	int, -- 1:solution intermedia 1, 2:solution intermedia 2, 3: estandar verificación
 	solution_name	varchar(50),
 	purity		numeric(6,2),
-	concentration	decimal,	
+	concentration	decimal,
 	aliquot		numeric(10,4),
 	volumen		numeric(10,2),
 	date_begin	date,
@@ -125,25 +104,18 @@ create table solution
 	Status		boolean
 );
 
--- drop table solution_methods
-create table solution_methods
-(
-	idsolution_methods serial primary key,
-	idsolution int references solution(idsolution),
-	idtemplate_method int references template_method(idtemplate_method),
-	status boolean
-);
-
 -- drop table set_calibs
 create table set_calibs
 (
 	idset_calibs serial primary key,
-	calib_group_name varchar(20),	
+	calib_group_name varchar(20),
 	R		numeric(12,6),
 	a		numeric(12,6),
 	b		numeric(12,6),
 	idtemplate_method int4 references template_method(idtemplate_method),
-	idgroup_solution int references group_solution(idgroup_solution)
+	idsolution_interm int references solution_interm(idsolution_interm),
+	usersign	varchar(20),
+	datesign	timestamp
 );
 
 -- drop table Calib_std
@@ -155,8 +127,8 @@ create table calib_std
 	absorbance_previus	numeric(12,4),
 	concentration	numeric(10,5),
 	idset_calibs 	int references set_calibs(idset_calibs),
-	idtemplate_method int4 references template_method(idtemplate_method),
-	idgroup_solution int references group_solution(idgroup_solution)
+	idtemplate_method int4 references template_method(idtemplate_method),	
+	idsolution_interm int references solution_interm(idsolution_interm)
 );
 
 -- drop table titration_main
