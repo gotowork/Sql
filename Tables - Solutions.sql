@@ -42,6 +42,7 @@ create table solution_interm
 	observation	varchar(100),
 	lote		varchar(12),
 	solution_status	boolean, -- activado = true, desactivado = false
+	solution_obs	varchar(15), -- utilizado cuando se desactiva
 	expired_status 	boolean, -- expirado = true, no expirado = false
 	root_type_pattern	int, -- 1:mrc, 2:patron solucion
 	root_idmr_detail	smallint references Mr_detail(idmr_detail),
@@ -115,7 +116,8 @@ create table set_calibs
 	idtemplate_method int4 references template_method(idtemplate_method),
 	idsolution_interm int references solution_interm(idsolution_interm),
 	usersign	varchar(20),
-	datesign	timestamp
+	datesign	timestamp,
+	last_calib	boolean
 );
 
 -- drop table Calib_std
